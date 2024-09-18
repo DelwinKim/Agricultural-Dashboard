@@ -1,0 +1,19 @@
+# Ignore the virtual environment folder
+venv/
+
+# Ignore database files
+*.sqlite3
+
+# Ignore Django migration files
+**/migrations/*
+
+# Ignore PyCharm and VSCode project files
+.idea/
+.vscode/
+
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
+
+# Ignore environment variables (for security)
+.env
