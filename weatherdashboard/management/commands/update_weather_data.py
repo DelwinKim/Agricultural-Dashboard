@@ -52,7 +52,7 @@ class Command(BaseCommand):
     help = 'Read the .dat file and update weather data in the database'
 
     def handle(self, *args, **kwargs):
-        file_path = "C:/Users/delwin/OneDrive - The University of Texas at Austin/AgrilifeProject/CCstation_Daily (has been modified).dat"
+        file_path = "/mnt/c/users/delwin/downloads/agrilifeweatherstation/CCstation_Daily (has been modified).dat"
         if not os.path.exists(file_path):
             self.stdout.write(self.style.ERROR(f'File {file_path} does not exist'))
             return

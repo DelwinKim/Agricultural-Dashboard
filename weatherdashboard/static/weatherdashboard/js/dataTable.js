@@ -89,7 +89,7 @@ DataTable.pipeline = function (opts) {
     // Configuration options
     var conf = Object.assign(
         {
-            pages: 5, // number of pages to cache
+            pages: 1, // number of pages to cache
             url: "", // script url
             data: null, // function or object with parameters to send to the server
             method: "GET" // Ajax HTTP method
@@ -281,7 +281,7 @@ function initializeTable(tableId) {
         ],
        "ajax": DataTable.pipeline({
             url: tableConfigObject.tableUrl,
-            pages: 5, // number of pages to cache
+            pages: 1, // number of pages to cache
             type: "GET",
             "data": function(d) {
                 d.table_name = tableId;  // Send table name to the server

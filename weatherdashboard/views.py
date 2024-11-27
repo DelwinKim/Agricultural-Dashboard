@@ -16,6 +16,7 @@ def index(request):
 def fetch_data_for_tables(request):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest': #implement the 404 not found page
         return HttpResponseForbidden("Forbidden")
+    
     draw = int(request.GET.get("draw", 0))
     start = int(request.GET.get("start", 0))
     length = int(request.GET.get("length", 7))
