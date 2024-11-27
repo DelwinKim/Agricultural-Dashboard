@@ -7,7 +7,13 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseForbidden
 
+def home_page(request):
+    stations = ["Corpus Christi Agrilife", "Corpus Christi North", "Corpus Christi South", "Dickinson", "Driscoll", "Freer", "Garwood", "Goliad", "Houston", "Houston North", "Kingsville", "Memorial Village", "Refugio"]
+    return render(request, "weatherdashboard/home_page.html", {'stations': stations})
 
+def station(request, station_name):
+    return render(request, "weatherdashboard/station.html", {'station_name': station_name})
+    
 def index(request):
     return render(request, "weatherdashboard/index.html")
 

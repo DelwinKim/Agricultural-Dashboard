@@ -1,0 +1,1 @@
+sass --watch weatherdashboard/static/weatherdashboard/scss/styles.scss:weatherdashboard/static/weatherdashboard/css/styles.css

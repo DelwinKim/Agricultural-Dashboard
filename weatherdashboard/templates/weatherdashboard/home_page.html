@@ -1,0 +1,60 @@
+{% extends "weatherdashboard/base.html" %}
+{% load static %}
+
+{% block sideBarToggle %}
+<!-- Override the sideBarToggle block to remove it -->
+{% endblock %}
+
+{% block sidebar %}
+<!-- Override the sidebar block to remove it -->
+{% endblock %}
+
+{% block styles %}
+<style>
+    #layoutSidenav_content {
+        padding-left: 0 !important;
+    }
+    .card {
+        max-width: 65%; /* Set the desired maximum width */
+        margin: 0 auto; /* Center the card */
+    }
+    #stationsTable {
+        width: 100%; /* Ensure the table takes the full width of the card */
+    }
+    /* Custom styles to remove underline from links */
+    .station-link {
+        text-decoration: none;
+    }
+    .station-link:hover {
+        text-decoration: underline; /* Optional: underline on hover */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Main Page</h1>
+    <div class="card mb-20">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Stations
+        </div>
+        <div class="card-body">
+            <table id="stationsTable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Station</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for station in stations %}
+                  <tr>
+                      <td><a href="{% url 'station' station_name=station %}" class="station-link">{{ station }}</a></td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
