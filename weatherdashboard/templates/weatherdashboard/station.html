@@ -183,7 +183,7 @@
 <script src="{% static 'weatherdashboard/js/chart-bar-demo.js' %}"></script>
 <script>
     var config = {
-        externalTableUrl: "{% url 'fetch_data_for_tables' %}"
+        externalTableUrl: "{% url 'fetch_data_for_tables' station_name=station_name %}"
     };
 </script>
 <script src="{% static 'weatherdashboard/js/dataTable.js' %}"></script>

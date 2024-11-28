@@ -1,19 +1,14 @@
-# saves scraped data from the web scraper into the django models
+# save_functions.py
 
-from weatherdashboard.models import (
-    GeneralWeatherData,
-    DetailedWeatherData,
-    HeatUnitsData,
-    ChillUnitsData,
-    SeasonalChillUnitsData,
-    WeatherStation,
-)
+from django.apps import apps
+from weatherdashboard.models import WeatherStation
 
 def save_general_weather(data, station_id):
     station = WeatherStation.objects.get(station_id=station_id)  # Get the station object
+    model_name = f"{station.name.replace(' ', '')}GeneralWeatherData"
+    GeneralWeatherData = apps.get_model('weatherdashboard', model_name)
     for row in data:
         GeneralWeatherData.objects.update_or_create(
-            station=station,  # Link data to station
             date=row[0],
             defaults={
                 'eto': row[1],
@@ -31,9 +26,10 @@ def save_general_weather(data, station_id):
 
 def save_detailed_weather(data, station_id):
     station = WeatherStation.objects.get(station_id=station_id)  # Get the station object
+    model_name = f"{station.name.replace(' ', '')}DetailedWeatherData"
+    DetailedWeatherData = apps.get_model('weatherdashboard', model_name)
     for row in data:
         DetailedWeatherData.objects.update_or_create(
-            station=station,  # Link data to station
             date=row[0],
             defaults={
                 'average_temp': row[1],
@@ -47,9 +43,10 @@ def save_detailed_weather(data, station_id):
 
 def save_heat_units(data, station_id):
     station = WeatherStation.objects.get(station_id=station_id)  # Get the station object
+    model_name = f"{station.name.replace(' ', '')}HeatUnitsData"
+    HeatUnitsData = apps.get_model('weatherdashboard', model_name)
     for row in data:
         HeatUnitsData.objects.update_or_create(
-            station=station,
             date=row[0],
             defaults={
                 'corn_heat_units': row[1],
@@ -63,9 +60,10 @@ def save_heat_units(data, station_id):
 
 def save_chill_units(data, station_id):
     station = WeatherStation.objects.get(station_id=station_id)  # Get the station object
+    model_name = f"{station.name.replace(' ', '')}ChillUnitsData"
+    ChillUnitsData = apps.get_model('weatherdashboard', model_name)
     for row in data:
         ChillUnitsData.objects.update_or_create(
-            station=station,
             date=row[0],
             defaults={
                 'method_1_hours': row[1],
@@ -75,9 +73,10 @@ def save_chill_units(data, station_id):
 
 def save_seasonal_chill_units(data, station_id):
     station = WeatherStation.objects.get(station_id=station_id)  # Get the station object
+    model_name = f"{station.name.replace(' ', '')}SeasonalChillUnitsData"
+    SeasonalChillUnitsData = apps.get_model('weatherdashboard', model_name)
     for row in data:
         SeasonalChillUnitsData.objects.update_or_create(
-            station=station,
             month=row[0],
             defaults={
                 'method_1_total': row[1],

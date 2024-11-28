@@ -1,10 +1,11 @@
 from django.apps import apps
-from weatherdashboard.models import (
-    BaseChillUnitsData,
-    BaseDetailedWeatherData,
+from django.db import models
+from .models import (
     BaseGeneralWeatherData,
-    BaseSeasonalChillUnitsData,
+    BaseDetailedWeatherData,
     BaseHeatUnitsData,
+    BaseChillUnitsData,
+    BaseSeasonalChillUnitsData,
 )
 
 def create_station_models(station_name):

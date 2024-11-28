@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.utils.dateformat import DateFormat
-from .models import GeneralWeatherData, DetailedWeatherData, HeatUnitsData, ChillUnitsData, SeasonalChillUnitsData
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseForbidden
+from django.apps import apps
 
 def home_page(request):
     stations = ["Corpus Christi Agrilife", "Corpus Christi North", "Corpus Christi South", "Dickinson", "Driscoll", "Freer", "Garwood", "Goliad", "Houston", "Houston North", "Kingsville", "Memorial Village", "Refugio"]
@@ -14,12 +14,9 @@ def home_page(request):
 def station(request, station_name):
     return render(request, "weatherdashboard/station.html", {'station_name': station_name})
     
-def index(request):
-    return render(request, "weatherdashboard/index.html")
-
 # Provides the data that populates the tables through ajax
 @cache_control(max_age=3600 * 6)  # Cache the view for 1 hour
-def fetch_data_for_tables(request):
+def fetch_data_for_tables(request, station_name):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest': #implement the 404 not found page
         return HttpResponseForbidden("Forbidden")
     
@@ -27,15 +24,26 @@ def fetch_data_for_tables(request):
     start = int(request.GET.get("start", 0))
     length = int(request.GET.get("length", 7))
     table_name = request.GET.get("table_name", "generalWeatherTable")
+
+    model_suffix_map = {
+        "generalWeatherTable": "GeneralWeatherData",
+        "detailedWeatherTable": "DetailedWeatherData",
+        "heatUnitsTable": "HeatUnitsData",
+        "chillUnitsTable": "ChillUnitsData",
+        "seasonalChillUnitsTable": "SeasonalChillUnitsData"
+    }
+    model_suffix = model_suffix_map.get(table_name)
+    model_name = f"{station_name.replace(' ', '')}{model_suffix}"
+    Model = apps.get_model('weatherdashboard', model_name)
     
     if table_name == "generalWeatherTable":
-        queryset = GeneralWeatherData.objects.all().order_by("-date")
+        queryset = Model.objects.all().order_by("-date")
         fields = ["date", "eto", "max_temp", "min_temp", "min_rh", "solar_rad", "rainfall", "wind_4am", "wind_4pm", "battery_min", "battery_max"]
     elif table_name == "detailedWeatherTable":
-        queryset = DetailedWeatherData.objects.all().order_by("-date")
+        queryset = Model.objects.all().order_by("-date")
         fields = ["date", "average_temp", "dew_point", "max_dewpoint", "min_dewpoint", "wind_run", "soil_temp"]
     elif table_name == "heatUnitsTable":
-        queryset = HeatUnitsData.objects.all().order_by("-date")
+        queryset = Model.objects.all().order_by("-date")
         fields = ["date", "corn_heat_units", "cotton_heat_units", "sorghum_heat_units", "heat_units_50_degree", "heat_units_55_degree", "heat_units_60_degree"]
     else:
         return JsonResponse({"error": "Invalid table name"}, status=400)
