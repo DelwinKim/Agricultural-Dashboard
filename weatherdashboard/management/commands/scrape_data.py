@@ -88,7 +88,7 @@ class Command(BaseCommand):
             url = details["url"]
 
             self.stdout.write(f"Scraping data for station {station_name} (ID: {station_id})...")
-            station_data = scrape_all_tables(url)
+            station_data = scrape_all_tables(url, station_id)
 
             # Save each table's data
             save_general_weather(station_data["general_weather"], station_id)
@@ -97,3 +97,4 @@ class Command(BaseCommand):
             save_chill_units(station_data["chill_units"], station_id)
 
             self.stdout.write(f"Data for station {station_name} (ID: {station_id}) saved successfully.")
+            
