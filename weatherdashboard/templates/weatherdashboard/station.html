@@ -3,178 +3,231 @@
 
 {% block content %}
 <div class="container-fluid px-4">
-  <h3 class="mt-4 mb-4">{{ station_name}}'s' Weather Dashboard</h3>
-  <div id="generalWeatherTableWrapper">    
-      <div class="card mb-5">
-          <div class="card-header">
-              <i class="fas fa-table me-1"></i>
-              General Summary
-          </div>
-          <div class="card-body">
-              <table id="generalWeatherTable" class="display">
-                  <thead>
-                      <tr>
-                          <th>Date</th>
-                          <th>ETo<br>(in.)</th>
-                          <th>Max Temp<br>(&deg;F)</th>
-                          <th>Min Temp<br>(&deg;F)</th>
-                          <th>Min RH<br>(%)</th>
-                          <th>Solar Rad.<br>(MJ/m2)</th>
-                          <th>Rainfall<br>(in.)</th>
-                          <th>Wind 4am<br>(mph)</th>
-                          <th>Wind 4pm<br>(mph)</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <!-- Data will be loaded here by DataTables through Ajax -->
-                  </tbody>
-              </table>
-          </div>
-      </div>
-  </div>
+    <h3 class="mt-4 mb-4">{{ station_name}}'s Weather Summary</h3>
+    <div id="generalWeatherTableWrapper">    
+        <div class="card mb-5">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                General Summary
+            </div>
+            <div class="card-body">
+                <table id="generalWeatherTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>ETo<br>(in.)</th>
+                            <th>Max Temp<br>(&deg;F)</th>
+                            <th>Min Temp<br>(&deg;F)</th>
+                            <th>Min RH<br>(%)</th>
+                            <th>Solar Rad.<br>(MJ/m2)</th>
+                            <th>Rainfall<br>(in.)</th>
+                            <th>Wind 4am<br>(mph)</th>
+                            <th>Wind 4pm<br>(mph)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be loaded here by DataTables through Ajax -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
 
-  <!-- Detailed Weather Data Table (hidden by default) -->
-  <div id="detailedWeatherTableWrapper" style="display:none;">
-      <div class="card mb-5">
-          <div class="card-header">
-              <i class="fas fa-table me-1"></i>
-              Detailed Summary
-          </div>
-          <div class="card-body">
-              <table id="detailedWeatherTable" class="display">
-                  <thead>
-                      <tr>
-                          <th>Date</th>
-                          <th>Avg Temp<br>(&deg;F)</th>
-                          <th>Dew Point<br>(&deg;F)</th>
-                          <th>Max Dewpoint<br>(&deg;F)</th>
-                          <th>Min Dewpoint<br>(&deg;F)</th>
-                          <th>Wind Run<br>(miles)</th>
-                          <th>Soil Temp<br>(&deg;F)</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <!-- Data will be loaded here by DataTables through Ajax -->
-                  </tbody>
-              </table>
-          </div>
-      </div>
-  </div>
+    <!-- Detailed Weather Data Table (hidden by default) -->
+    <div id="detailedWeatherTableWrapper" style="display:none;">
+        <div class="card mb-5">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Detailed Summary
+            </div>
+            <div class="card-body">
+                <table id="detailedWeatherTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Avg Temp<br>(&deg;F)</th>
+                            <th>Dew Point<br>(&deg;F)</th>
+                            <th>Max Dewpoint<br>(&deg;F)</th>
+                            <th>Min Dewpoint<br>(&deg;F)</th>
+                            <th>Wind Run<br>(miles)</th>
+                            <th>Soil Temp<br>(&deg;F)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be loaded here by DataTables through Ajax -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
 
-  <!-- Heat Units Data Table (hidden by default) -->
-  <div id="heatUnitsTableWrapper" style="display:none;">
-      <div class="card mb-5">
-          <div class="card-header">
-              <i class="fas fa-table me-1"></i>
-              Heat Units
-          </div>
-          <div class="card-body">
-              <table id="heatUnitsTable" class="display">
-                  <thead>
-                      <tr>
-                          <th>Date</th>
-                          <th>Corn Heat Units</th>
-                          <th>Cotton Heat Units</th>
-                          <th>Sorghum Heat Units</th>
-                          <th>Heat Units 50&deg;F</th>
-                          <th>Heat Units 55&deg;F</th>
-                          <th>Heat Units 60&deg;F</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <!-- Data will be loaded here by DataTables through Ajax -->
-                  </tbody>
-              </table>
-          </div>
-      </div>
-  </div>
+    <!-- Heat Units Data Table (hidden by default) -->
+    <div id="heatUnitsTableWrapper" style="display:none;">
+        <div class="card mb-5">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Heat Units
+            </div>
+            <div class="card-body">
+                <table id="heatUnitsTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Corn Heat Units</th>
+                            <th>Cotton Heat Units</th>
+                            <th>Sorghum Heat Units</th>
+                            <th>Heat Units 50&deg;F</th>
+                            <th>Heat Units 55&deg;F</th>
+                            <th>Heat Units 60&deg;F</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be loaded here by DataTables through Ajax -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
 
-  <!-- Chill Units Data Table (hidden by default) -->
-  <div id="chillUnitsTableWrapper" style="display:none;">
-      <div class="card mb-5">
-          <div class="card-header">
-              <i class="fas fa-table me-1"></i>
-              Chill Units
-          </div>
-          <div class="card-body">
-              <table id="chillUnitsTable" class="display">
-                  <thead>
-                      <tr>
-                          <th>Date</th>
-                          <th>Avg Temp<br>(&deg;F)</th>
-                          <th>Dew Point<br>(&deg;F)</th>
-                          <th>Max Dewpoint<br>(&deg;F)</th>
-                          <th>Min Dewpoint<br>(&deg;F)</th>
-                          <th>Wind Run<br>(miles)</th>
-                          <th>Soil Temp<br>(&deg;F)</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <!-- Data will be loaded here by DataTables through Ajax -->
-                  </tbody>
-              </table>
-          </div>
-      </div>
-  </div>
+    <div class="row">
+        <div class="col-xl-6">
+            <!-- Chill Units Data Table (hidden by default) -->
+            <div id="seasonalChillUnitsTableWrapper" style="display:none;">
+                <div class="card mb-5">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>   
+                        Chilling Hours for the 2024-2025 Season<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;October 1, 2024 through March 31, 2025
+                    </div>
+                    <div class="card-body">
+                        <table id="seasonalChillUnitsTable" class="display">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Method 1 <br>Number of hours >= 32&deg;F and <= 45&deg;F</th>
+                                    <th>Method 2 <br>Number of hours <= 45&deg;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for unit in seasonal_chill_units %}
+                                <tr>
+                                    <td>{{ unit.month }}</td>
+                                    <td>{{ unit.method_1_total }}</td>
+                                    <td>{{ unit.method_2_total }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>{{ total_method_1 }}</th>
+                                    <th>{{ total_method_2 }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <div class="row">
-      <div class="col-xl-6">
-          <div class="card mb-4">
-              <div class="card-header">
-                  <i class="fas fa-chart-area me-1"></i>
-                  Line Graph
-              </div>
-              <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
-          </div>
-      </div>
-      <div class="col-xl-6">
-          <div class="card mb-4">
-              <div class="card-header">
-                  <i class="fas fa-chart-bar me-1"></i>
-                  Bar Chart
-              </div>
-              <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
-          </div>
-      </div>
-  </div>
-  <div class="row">
-      <div class="col-xl-3 col-md-6">
-          <div class="card bg-primary text-white mb-4">
-              <div class="card-body">Primary Card</div>
-              <div class="card-footer d-flex align-items-center justify-content-between">
-                  <a class="small text-white stretched-link" href="#">View Details</a>
-                  <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-              </div>
-          </div>
-      </div>
-      <div class="col-xl-3 col-md-6">
-          <div class="card bg-warning text-white mb-4">
-              <div class="card-body">Warning Card</div>
-              <div class="card-footer d-flex align-items-center justify-content-between">
-                  <a class="small text-white stretched-link" href="#">View Details</a>
-                  <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-              </div>
-          </div>
-      </div>
-      <div class="col-xl-3 col-md-6">
-          <div class="card bg-success text-white mb-4">
-              <div class="card-body">Success Card</div>
-              <div class="card-footer d-flex align-items-center justify-content-between">
-                  <a class="small text-white stretched-link" href="#">View Details</a>
-                  <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-              </div>
-          </div>
-      </div>
-      <div class="col-xl-3 col-md-6">
-          <div class="card bg-danger text-white mb-4">
-              <div class="card-body">Danger Card</div>
-              <div class="card-footer d-flex align-items-center justify-content-between">
-                  <a class="small text-white stretched-link" href="#">View Details</a>
-                  <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-              </div>
-          </div>
-      </div>
-  </div>
+        <div class="col-xl-6">
+            <!-- placeholder -->
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    Line Graph
+                </div>
+                <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Bar Chart
+                </div>
+                <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">Primary Card</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">Warning Card</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">Success Card</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body">Danger Card</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 

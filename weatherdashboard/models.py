@@ -63,8 +63,9 @@ class ChillUnitsData(models.Model):
 class SeasonalChillUnitsData(models.Model):
     station = models.ForeignKey(WeatherStation, on_delete=models.CASCADE)
     month = models.CharField(max_length=10)
+    month_num = models.IntegerField(default=0)  
     method_1_total = models.IntegerField()
     method_2_total = models.IntegerField()
 
     def __str__(self):
-        return f"{self.station.name} - {self.date}"
+        return f"{self.station.name}"

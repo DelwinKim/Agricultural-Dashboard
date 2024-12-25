@@ -1,10 +1,10 @@
 from django.core.management.base import BaseCommand
 from weatherdashboard.utils.web_scraper import scrape_all_tables
-from weatherdashboard.save_functions import (
+from weatherdashboard.utils.save_functions import (
     save_general_weather,
     save_detailed_weather,
     save_heat_units,
-    save_chill_units,
+    save_seasonal_chill_units,
 )
 
 weather_station_urls = {
@@ -94,7 +94,7 @@ class Command(BaseCommand):
             save_general_weather(station_data["general_weather"], station_id)
             save_detailed_weather(station_data["detailed_weather"], station_id)
             save_heat_units(station_data["heat_units"], station_id)
-            save_chill_units(station_data["chill_units"], station_id)
+            save_seasonal_chill_units(station_data["seasonal_chill_units"], station_id)
 
             self.stdout.write(f"Data for station {station_name} (ID: {station_id}) saved successfully.")
             

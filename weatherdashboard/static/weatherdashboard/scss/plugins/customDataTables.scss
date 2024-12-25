@@ -34,6 +34,7 @@
 
 .dataTable>colgroup>col,
 .dataTable>tbody>tr>td,
+.dataTable>tfoot>tr>td,
 .dataTable>thead>tr>th {
     vertical-align: middle; // Center vertically by default for all cells
     padding: $table-cell-padding-y $table-cell-padding-x; // Apply padding
@@ -44,6 +45,10 @@
 .dataTable th:nth-child(1),
 .dataTable td:nth-child(1) {
     text-align: left; // Align text in the "Date" column to the left
+}
+
+.dataTable>tfoot>tr>td {
+    font-weight: bold;
 }
 
 div.dt-container.dt-empty-footer tbody>tr:last-child>* {
@@ -76,6 +81,6 @@ div.dt-container.dt-empty-footer tbody>tr:last-child>* {
     @include card-styles($heat-units-bg, $heat-units-header);
 }
 
-#chillUnitsTableWrapper {
+#seasonalChillUnitsTableWrapper {
     @include card-styles($chill-units-bg, $chill-units-header);
 }

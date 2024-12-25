@@ -1,6 +1,3 @@
-# save_functions.py
-
-from django.apps import apps
 from weatherdashboard.models import WeatherStation, GeneralWeatherData, DetailedWeatherData, HeatUnitsData, ChillUnitsData, SeasonalChillUnitsData
 
 def save_general_weather(data, station_id):
@@ -55,7 +52,7 @@ def save_heat_units(data, station_id):
             }
         )
 
-def save_chill_units(data, station_id):
+def save_seasonal_chill_units(data, station_id):
     station = WeatherStation.objects.get(station_id=station_id)  # Get the station object
     for row in data:
         ChillUnitsData.objects.update_or_create(
@@ -74,7 +71,8 @@ def save_seasonal_chill_units(data, station_id):
             station=station,
             month=row[0],
             defaults={
-                'method_1_total': row[1],
-                'method_2_total': row[2],
+                'month_num' : row[1],
+                'method_1_total': row[2],
+                'method_2_total': row[3],
             }
         )

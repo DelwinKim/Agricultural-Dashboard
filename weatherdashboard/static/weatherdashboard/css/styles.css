@@ -11879,7 +11879,7 @@ body {
   justify-content: space-between;
   min-width: 0;
   flex-grow: 1;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 75px);
   margin-left: -225px;
 }
 
@@ -11927,14 +11927,14 @@ body {
   z-index: 1038;
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav {
-  padding-top: 56px;
+  padding-top: 75px;
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav .sb-sidenav-menu {
   overflow-y: auto;
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_content {
   padding-left: 225px;
-  top: 56px;
+  top: 75px;
 }
 
 #layoutError {
@@ -11961,7 +11961,7 @@ body {
 
 .sb-topnav {
   padding-left: 0;
-  height: 56px;
+  height: 75px;
   z-index: 1039;
   background-color: rgb(25, 135, 84);
 }
@@ -12157,6 +12157,7 @@ body {
 
 .dataTable > colgroup > col,
 .dataTable > tbody > tr > td,
+.dataTable > tfoot > tr > td,
 .dataTable > thead > tr > th {
   vertical-align: middle;
   padding: 0.5rem 0.5rem;
@@ -12166,6 +12167,10 @@ body {
 .dataTable th:nth-child(1),
 .dataTable td:nth-child(1) {
   text-align: left;
+}
+
+.dataTable > tfoot > tr > td {
+  font-weight: bold;
 }
 
 div.dt-container.dt-empty-footer tbody > tr:last-child > * {
@@ -12202,10 +12207,10 @@ div.dt-container.dt-empty-footer tbody > tr:last-child > * {
   text-transform: uppercase;
 }
 
-#chillUnitsTableWrapper .card-body {
+#seasonalChillUnitsTableWrapper .card-body {
   background-color: #E3F2FD;
 }
-#chillUnitsTableWrapper .card-header {
+#seasonalChillUnitsTableWrapper .card-header {
   background-color: #BBDEFB;
   font-size: 0.85rem;
   font-weight: bold;

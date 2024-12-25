@@ -11,7 +11,70 @@ const tableConfig = {
             { "data": "rainfall" },
             { "data": "wind_4am" },
             { "data": "wind_4pm" }
-        ]
+        ],
+        footerCallback: function (row, data, start, end, display) {
+            let api = this.api();
+
+            // Remove the formatting to get integer data for summation
+            let intVal = function (i) {
+                return typeof i === 'string'
+                    ? i.replace(/[\$,]/g, '') * 1
+                    : typeof i === 'number'
+                    ? i
+                    : 0;
+            };
+
+            let pageTotalEto = api
+                .column(1, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            let pageMaxTemp = api
+                .column(2, { page: 'current' })
+                .data()
+                .reduce((a, b) => Math.max(intVal(a), intVal(b)), -Infinity);
+
+            let pageMinTemp = api
+                .column(3, { page: 'current' })
+                .data()
+                .reduce((a, b) => Math.min(intVal(a), intVal(b)), Infinity);
+
+            let pageMinRh = api
+                .column(4, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0) / data.length;
+
+            let pageTotalSolarRad = api
+                .column(5, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            let pageTotalRainfall = api
+                .column(6, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            let pageAvgWind4am = api
+                .column(7, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0) / data.length;
+
+            let pageAvgWind4pm = api
+                .column(8, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0) / data.length;
+
+            // Update footer
+            $(api.column(0).footer()).html('Data Summary');
+            $(api.column(1).footer()).html(pageTotalEto.toFixed(2));
+            $(api.column(2).footer()).html(pageMaxTemp);
+            $(api.column(3).footer()).html(pageMinTemp);
+            $(api.column(4).footer()).html(Math.round(pageMinRh));
+            $(api.column(5).footer()).html(pageTotalSolarRad.toFixed(2));
+            $(api.column(6).footer()).html(pageTotalRainfall.toFixed(2));
+            $(api.column(7).footer()).html(pageAvgWind4am.toFixed(2));
+            $(api.column(8).footer()).html(pageAvgWind4pm.toFixed(2));
+        }
     },
     detailedWeatherTable: {
         tableUrl: config.externalTableUrl,
@@ -23,7 +86,58 @@ const tableConfig = {
             { "data": "min_dewpoint" },
             { "data": "wind_run" },
             { "data": "soil_temp" }
-        ]
+        ],
+        footerCallback: function (row, data, start, end, display) {
+            let api = this.api();
+
+            // Remove the formatting to get integer data for summation
+            let intVal = function (i) {
+                return typeof i === 'string'
+                    ? i.replace(/[\$,]/g, '') * 1
+                    : typeof i === 'number'
+                    ? i
+                    : 0;
+            };
+
+            let pageAvgTemp = api
+                .column(1, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0) / data.length;
+
+            let pageDewPoint = api
+                .column(2, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0) / data.length;
+
+            let pageMaxDewpoint = api
+                .column(3, { page: 'current' })
+                .data()
+                .reduce((a, b) => Math.max(intVal(a), intVal(b)), -Infinity);
+
+            let pageMinDewpoint = api
+                .column(4, { page: 'current' })
+                .data()
+                .reduce((a, b) => Math.min(intVal(a), intVal(b)), Infinity);
+
+            let pageWindRun = api
+                .column(5, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            let pageSoilTemp = api
+                .column(6, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0) / data.length;
+
+            // Update footer
+            $(api.column(0).footer()).html('Data Summary');
+            $(api.column(1).footer()).html(Math.round(pageAvgTemp));
+            $(api.column(2).footer()).html(Math.round(pageDewPoint));
+            $(api.column(3).footer()).html(Math.round(pageMaxDewpoint));
+            $(api.column(4).footer()).html(Math.round(pageMinDewpoint));
+            $(api.column(5).footer()).html(pageWindRun);
+            $(api.column(6).footer()).html(Math.round(pageSoilTemp));
+        }
     },
     heatUnitsTable: {
         tableUrl: config.externalTableUrl,
@@ -35,9 +149,67 @@ const tableConfig = {
             { "data": "heat_units_50_degree" },
             { "data": "heat_units_55_degree" },
             { "data": "heat_units_60_degree" }
-        ]
+        ],
+        footerCallback: function (row, data, start, end, display) {
+            let api = this.api();
+
+            // Remove the formatting to get integer data for summation
+            let intVal = function (i) {
+                return typeof i === 'string'
+                    ? i.replace(/[\$,]/g, '') * 1
+                    : typeof i === 'number'
+                    ? i
+                    : 0;
+            };
+
+            let pageCorn = api
+                .column(1, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            let pageCotton = api
+                .column(2, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            let pageSorghum = api
+                .column(3, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            let page50Degree = api
+                .column(4, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            let page55Degree = api
+                .column(5, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            let page60Degree = api
+                .column(6, { page: 'current' })
+                .data()
+                .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+            // Update footer
+            $(api.column(0).footer()).html('Data Summary');
+            $(api.column(1).footer()).html(pageCorn);
+            $(api.column(2).footer()).html(pageCotton);
+            $(api.column(3).footer()).html(pageSorghum);
+            $(api.column(4).footer()).html(page50Degree);
+            $(api.column(5).footer()).html(page55Degree);
+            $(api.column(6).footer()).html(page60Degree);
+        }
     },
-    // More tables added in the future...
+    seasonalChillUnitsTable: {
+        tableUrl: config.externalTableUrl,
+        columns: [
+            { "data": "month" },
+            { "data": "method_1" },
+            { "data": "method_2" },
+        ],
+    },
 };
 
 
@@ -267,31 +439,43 @@ function initializeTable(tableId) {
         console.error(`No table configuration found for tableId: ${tableId}`);
         return;
     }
-
-    const table = $(`#${tableId}`).DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ordering": false,
-        "searching": false,
-        "pageLength": 7,
-        autoWidth: false,
-        "lengthMenu": [
-            [7, 14, 30, 90, 365, -1, -2],
-            [7, 14, 30, 90, 365, "All", "Custom"],
-        ],
-       "ajax": DataTable.pipeline({
-            url: tableConfigObject.tableUrl,
-            pages: 1, // number of pages to cache
-            type: "GET",
-            "data": function(d) {
-                d.table_name = tableId;  // Send table name to the server
-                return d;
-                // Just for debugging
-                console.log(`Requesting data for table: ${tableId}`);
-            }        
-        }),
-        "columns": tableConfigObject.columns
-    });
+    if (tableId !== 'seasonalChillUnitsTable') {  // dynamic rendering through ajax
+        const table = $(`#${tableId}`).DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ordering": false,
+            "searching": false,
+            "pageLength": 7,
+            autoWidth: false,
+            "lengthMenu": [
+                [7, 14, 30, 90, 365, -1, -2],
+                [7, 14, 30, 90, 365, "All", "Custom"],
+            ],
+           "ajax": DataTable.pipeline({
+                url: tableConfigObject.tableUrl,
+                pages: 1, // number of pages to cache
+                type: "GET",
+                "data": function(d) {
+                    d.table_name = tableId;  // Send table name to the server
+                    return d;
+                    // Just for debugging
+                    console.log(`Requesting data for table: ${tableId}`);
+                }        
+            }),
+            "columns": tableConfigObject.columns,
+            "footerCallback": tableConfigObject.footerCallback  
+        });
+    } else {  // for seasonal chill units table, no ajax (static rendering)
+        const table = $(`#${tableId}`).DataTable({
+            "ordering": false,
+            "searching": false,
+            "paging": false,
+            autoWidth: false,
+            info: false,
+            "columns": tableConfigObject.columns,
+        });
+    }
+    
     console.log(`Initializing DataTable for table: ${tableId}`);
 }
 
@@ -306,7 +490,7 @@ $(document).ready(function() {
     defaultButton.classList.remove('btn-outline-light');
 
     // Check other tables' states and initialize if previously enabled
-    const tables = ['detailedWeatherTable', 'heatUnitsTable', 'chillUnitsTable'];
+    const tables = ['detailedWeatherTable', 'heatUnitsTable', 'seasonalChillUnitsTable'];
     
     tables.forEach(tableId => {
         const state = localStorage.getItem(tableId);
