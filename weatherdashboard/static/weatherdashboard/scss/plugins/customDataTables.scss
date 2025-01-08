@@ -35,16 +35,17 @@
 .dataTable>colgroup>col,
 .dataTable>tbody>tr>td,
 .dataTable>tfoot>tr>td,
+.dataTable>tfoot>tr>th,
 .dataTable>thead>tr>th {
-    vertical-align: middle; // Center vertically by default for all cells
-    padding: $table-cell-padding-y $table-cell-padding-x; // Apply padding
-    text-align: center; // Center align text by default for all columns
+    vertical-align: middle !important; // Center vertically by default for all cells
+    padding: $table-cell-padding-y $table-cell-padding-x !important; // Apply padding
+    text-align: center !important; // Center align text by default for all columns
 }
 
 // Align the "Date" header and cells to the left
 .dataTable th:nth-child(1),
 .dataTable td:nth-child(1) {
-    text-align: left; // Align text in the "Date" column to the left
+    text-align: left !important; // Align text in the "Date" column to the left
 }
 
 .dataTable>tfoot>tr>td {

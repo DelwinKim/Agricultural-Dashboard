@@ -6,12 +6,41 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseForbidden
 from .models import GeneralWeatherData, DetailedWeatherData, HeatUnitsData, SeasonalChillUnitsData
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
+regions_and_stations = {"Coastal Bend":  ["Corpus Christi Agrilife", "Corpus Christi North", "Corpus Christi South", "Dickinson", 
+                                          "Driscoll", "Freer", "Garwood", "Goliad", "Houston", "Houston North", "Kingsville", 
+                                          "Memorial Village", "Refugio", "Richmond North", 
+                                          "Richmond South", "Spring", "Victoria County West"],
+                        "East Texas": ["Not Available"],
+                        "Greater Texas": ["Not Available"],
+                        "Lower Rio Grande": ["Not Available"],
+                        "South Central": ["Not Available"],
+                        "The Metroplex": ["Not Available"],
+                        "West Texas": ["Not Available"],
+                        "Winter Garden": ["Not Available"],
+                       }
 def home_page(request):
-    stations = ["Corpus Christi Agrilife", "Corpus Christi North", "Corpus Christi South", "Dickinson", "Driscoll", "Freer", 
-                "Garwood", "Goliad", "Houston", "Houston North", "Kingsville", "Memorial Village", "Refugio", "Richmond North", 
-                "Richomond South", "Spring", "Victoria County West"]
-    return render(request, "weatherdashboard/home_page.html", {'stations': stations})
+    # stations = ["Corpus Christi Agrilife", "Corpus Christi North", "Corpus Christi South", "Dickinson", "Driscoll", "Freer", 
+    #             "Garwood", "Goliad", "Houston", "Houston North", "Kingsville", "Memorial Village", "Refugio", "Richmond North", 
+    #             "Richmond South", "Spring", "Victoria County West"]
+
+    central = ZoneInfo("America/Chicago")
+    now_central = datetime.now(central)
+    yesterday_central = (now_central - timedelta(days=1)).date()
+    
+    # Fetch the most recent general weather data for each station
+    recent_weather_data = {}
+    for station in regions_and_stations["Coastal Bend"]:
+        recent_weather = GeneralWeatherData.objects.filter(station__name=station).order_by('-date').first()
+        if recent_weather and recent_weather.date == yesterday_central:
+            recent_weather_data[station] = recent_weather
+    
+    return render(request, "weatherdashboard/home_page.html", {
+        'recent_weather_data': recent_weather_data,
+        'regions_and_stations': regions_and_stations,
+    })
 
 @cache_control(max_age=3600 * 6)  # Cache the view for 1 hour FIXME: NOt sure about this caching, does it even work, also look at caching for fetch_data_for_tables
 def station(request, station_name):
@@ -21,13 +50,14 @@ def station(request, station_name):
     
     return render(request, "weatherdashboard/station.html", {
         'station_name': station_name,
+        'regions_and_stations': regions_and_stations,
         'seasonal_chill_units': seasonal_chill_units,
         'total_method_1': total_method_1,
         'total_method_2': total_method_2,
     })
     
 # Provides the data that populates the tables through ajax
-@cache_control(max_age=3600 * 6)  # Cache the view for 1 hour
+# @cache_control(max_age=3600 * 6)  # Cache the view for 1 hour
 def fetch_data_for_tables(request, station_name):
     if request.headers.get('X-Requested-With') != 'XMLHttpRequest': #implement the 404 not found page
         return HttpResponseForbidden("Forbidden")
@@ -57,17 +87,22 @@ def fetch_data_for_tables(request, station_name):
     #     length = queryset.count()  # Set length to total number of records
 
     # paginate the queryset
-    paginator = Paginator(queryset, length)
-    page_number = start // length + 1
-    page_obj = paginator.get_page(page_number)
+    # paginator = Paginator(queryset, length)
+    # page_number = start // length + 1
+    # print(f"-----------------start: {start}")
+    # print(f"-----------------length: {length}")
+    # print(f"-----------------page_number: {page_number}")
+    # print(f"-----------------paginator: {paginator.num_pages}")
+    # page_obj = paginator.get_page(page_number)
+
+    currentPageList = queryset[start:start + length]  # FIXME: Just make sure this is correct and EFFICIENT
 
     data = []
-    for obj in page_obj.object_list:
+    for obj in currentPageList:
         formatted_data = {field: getattr(obj, field) for field in fields}
         if 'date' in formatted_data:  # format the date field
             formatted_data['date'] = DateFormat(formatted_data['date']).format('M j, Y - D')
         data.append(formatted_data)
-
 
     response = {
         'draw': draw,

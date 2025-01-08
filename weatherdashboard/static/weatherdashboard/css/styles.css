@@ -11970,9 +11970,34 @@ body {
   margin: 0;
   font-weight: bold;
   color: white;
+  display: flex; /* Makes the navbar-brand a flex container */
+  align-items: center; /* Vertically centers the image */
+  height: 100%;
 }
 .sb-topnav.navbar-dark #sidebarToggle {
   color: rgba(255, 255, 255, 0.8);
+}
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -0.125rem;
+  display: none; /* Hide by default */
+}
+
+.dropdown-submenu:hover > .dropdown-menu,
+.dropdown-submenu:focus > .dropdown-menu {
+  display: block; /* Show on hover or focus */
+}
+
+.dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sb-sidenav {
@@ -12158,15 +12183,16 @@ body {
 .dataTable > colgroup > col,
 .dataTable > tbody > tr > td,
 .dataTable > tfoot > tr > td,
+.dataTable > tfoot > tr > th,
 .dataTable > thead > tr > th {
-  vertical-align: middle;
-  padding: 0.5rem 0.5rem;
-  text-align: center;
+  vertical-align: middle !important;
+  padding: 0.5rem 0.5rem !important;
+  text-align: center !important;
 }
 
 .dataTable th:nth-child(1),
 .dataTable td:nth-child(1) {
-  text-align: left;
+  text-align: left !important;
 }
 
 .dataTable > tfoot > tr > td {

@@ -19,7 +19,7 @@
         <nav class="sb-topnav navbar navbar-expand navbar-dark">
             <!-- Navbar Brand-->
             <!-- <a class="navbar-brand ps-3 fs-2" href="{% url 'home_page' %}">Crop Sense</a> -->
-            <a class="navbar-brand ps-3" href="{% url 'home_page' %}">
+            <a class="navbar-brand ps-3 " href="{% url 'home_page' %}">
                 <img src="{% static 'weatherdashboard/images/logo (HD).png' %}" alt="Crop Sense Logo" style="height: 70px; width: auto;">
             </a>            
           
@@ -27,15 +27,41 @@
             {% block sideBarToggle %}
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>   
             {% endblock %}
+
+            <!-- Custom Navbar Items -->
+            <ul class="navbar-nav me-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="recentDataDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Recent Data
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="recentDataDropdown">
+                        {% for region, stations in regions_and_stations.items %}
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">{{ region }}</a>
+                                <ul class="dropdown-menu">
+                                    {% for station_name in stations %}
+                                        <li><a class="dropdown-item" href="{% url 'station' station_name=station_name %}">{{ station_name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Download Data</a>
+                </li>
+            </ul>
+
             <!-- Navbar Search-->
-            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            <!-- <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <div class="input-group">
                     <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
                     <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
                 </div>
-            </form>
-            <!-- Navbar-->
-            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            </form> -->
+            
+            <!-- Navbar Profile-->
+            <!-- <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -45,8 +71,9 @@
                         <li><a class="dropdown-item" href="#!">Logout</a></li>
                     </ul>
                 </li>
-            </ul>
+            </ul> -->
         </nav>
+
         <div id="layoutSidenav">
             {% block sidebar %}
             <div id="layoutSidenav_nav">

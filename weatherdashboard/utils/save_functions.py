@@ -52,17 +52,17 @@ def save_heat_units(data, station_id):
             }
         )
 
-def save_seasonal_chill_units(data, station_id):
-    station = WeatherStation.objects.get(station_id=station_id)  # Get the station object
-    for row in data:
-        ChillUnitsData.objects.update_or_create(
-            station=station,
-            date=row[0],
-            defaults={
-                'method_1_hours': row[1],
-                'method_2_hours': row[2],
-            }
-        )
+# def save_seasonal_chill_units(data, station_id):
+#     station = WeatherStation.objects.get(station_id=station_id)  # Get the station object
+#     for row in data:
+#         ChillUnitsData.objects.update_or_create(
+#             station=station,
+#             date=row[0],
+#             defaults={
+#                 'method_1_hours': row[1],
+#                 'method_2_hours': row[2],
+#             }
+#         )
 
 def save_seasonal_chill_units(data, station_id):
     station = WeatherStation.objects.get(station_id=station_id)  # Get the station object

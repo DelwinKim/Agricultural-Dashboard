@@ -58,9 +58,9 @@ def scrape_table(url, table_id, station_id):
                     cells.append(parsed_date.strftime("%Y-%m-%d"))
                 elif len(cells) == 0 and table_id == "chillUnits":  # first column is the month
                     month_order = {
-                        'January': 1, 'Jan': 1, 'February': 2, 'Feb': 2, 'March': 3, 'Mar': 3, 'April': 4, 'Apr': 4,
-                        'May': 5, 'June': 6, 'Jun': 6, 'July': 7, 'Jul': 7, 'August': 8, 'Aug': 8,
-                        'September': 9, 'Sep': 9, 'October': 10, 'Oct': 10, 'November': 11, 'Nov': 11, 'December': 12, 'Dec': 12
+                        'January': 4, 'Jan': 4, 'February': 5, 'Feb': 5, 'March': 6, 'Mar': 6, 'April': 7, 'Apr': 7,
+                        'May': 8, 'June': 9, 'Jun': 9, 'July': 10, 'Jul': 10, 'August': 11, 'Aug': 11,
+                        'September': 12, 'Sep': 12, 'October': 1, 'Oct': 1, 'November': 2, 'Nov': 2, 'December': 3, 'Dec': 3
                     }
                     cells.append(text.replace(',', ''))
                     cells.append(month_order[text])

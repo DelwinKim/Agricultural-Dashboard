@@ -15,6 +15,10 @@
         margin: 0;
         font-weight: bold;
         color: white;
+
+        display: flex;              /* Makes the navbar-brand a flex container */
+        align-items: center;        /* Vertically centers the image */
+        height: 100%;   
     }
 
     &.navbar-dark {
@@ -22,4 +26,26 @@
             color: $topnav-dark-toggler-color;
         }
     }
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -0.125rem;
+    display: none; /* Hide by default */
+}
+
+.dropdown-submenu:hover > .dropdown-menu,
+.dropdown-submenu:focus > .dropdown-menu {
+    display: block; /* Show on hover or focus */
+}
+
+.dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
