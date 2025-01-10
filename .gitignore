@@ -17,3 +17,5 @@ __pycache__/
 
 # Ignore environment variables (for security)
 .env
+
+/Agricultural-Dashboard/weatherdashboard/static/weatherdashboard/scss
