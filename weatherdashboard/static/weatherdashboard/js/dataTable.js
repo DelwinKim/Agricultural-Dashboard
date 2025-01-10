@@ -253,7 +253,6 @@ function toggleTable(tableId) {
     }
 }
 
-
 //
 // Pipelining function for DataTables. To be used to the `ajax` option of DataTables
 //
@@ -510,3 +509,4 @@ $(document).ready(function() {
         }
     });
 });
+

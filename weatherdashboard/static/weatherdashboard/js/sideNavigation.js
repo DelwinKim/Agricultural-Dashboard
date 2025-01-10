@@ -68,3 +68,28 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 });
+
+/**
+ * Activates the specified tab.
+ * @param {string} tabId The ID of the tab to activate.
+ */
+function switchToTab(tabId) {
+    const tabs = ['tables', 'graphs'];
+    tabs.forEach(id => {
+        const tabContent = document.getElementById(id);
+        if (id === tabId) {
+            tabContent.classList.add('show', 'active'); // Activate tab
+        } else {
+            tabContent.classList.remove('show', 'active'); // Deactivate other tabs
+        }
+    });
+}
+
+/**
+ * Deactivates the specified tab.
+ * @param {string} tabId The ID of the tab to deactivate.
+ */
+function closeTab(tabId) {
+    const tabContent = document.getElementById(tabId);
+    tabContent.classList.remove('show', 'active'); // Deactivate tab
+}
