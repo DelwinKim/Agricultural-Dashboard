@@ -1,0 +1,87 @@
+// For Table Responsiveness
+.dt-container .dataTable { // maybe look into changing this to apply to the wrapper instead
+    @extend .table-responsive;
+    font-size: $font-size-sm;
+}
+
+.dt-container .dataTable {
+    @extend .table;
+    @extend .table-bordered;
+    @extend .table-hover;
+    border-collapse: collapse;
+}
+
+// For selector
+.dt-length select {
+    // @extend .form-select;
+    display: inline-block;
+    padding-left: 1.125rem;
+    padding-right: 2.125rem;
+    margin-right: 0.25rem;
+}
+
+.dt-length, .dt-info {
+    float: left;
+}
+
+.dt-paging {
+    float: right;
+}
+
+.dt-container {
+    overflow-x: auto; // Allow horizontal scrolling if necessary
+}
+
+.dataTable>colgroup>col,
+.dataTable>tbody>tr>td,
+.dataTable>tfoot>tr>td,
+.dataTable>tfoot>tr>th,
+.dataTable>thead>tr>th {
+    vertical-align: middle !important; // Center vertically by default for all cells
+    padding: $table-cell-padding-y $table-cell-padding-x !important; // Apply padding
+    text-align: center !important; // Center align text by default for all columns
+}
+
+// Align the "Date" header and cells to the left
+.dataTable th:nth-child(1),
+.dataTable td:nth-child(1) {
+    text-align: left !important; // Align text in the "Date" column to the left
+}
+
+.dataTable>tfoot>tr>td {
+    font-weight: bold;
+}
+
+div.dt-container.dt-empty-footer tbody>tr:last-child>* {
+    border-bottom: none;
+}
+
+// Color Schemes for the Different Tables Mixin
+@mixin card-styles($body-bg, $header-bg) {
+    .card-body {
+        background-color: $body-bg;
+    }
+    .card-header {
+        background-color: $header-bg;
+        font-size: 0.85rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+}
+
+// Apply Color Schemes
+#generalWeatherTableWrapper {
+    @include card-styles($general-weather-bg, $general-weather-header);
+}
+
+#detailedWeatherTableWrapper {
+    @include card-styles($detailed-weather-bg, $detailed-weather-header);
+}
+
+#heatUnitsTableWrapper {
+    @include card-styles($heat-units-bg, $heat-units-header);
+}
+
+#seasonalChillUnitsTableWrapper {
+    @include card-styles($chill-units-bg, $chill-units-header);
+}
