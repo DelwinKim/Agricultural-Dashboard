@@ -18,4 +18,4 @@ __pycache__/
 # Ignore environment variables (for security)
 .env
 
-weatherdashboard/static/weatherdashboard/scss
+/weatherdashboard/static/weatherdashboard/scss
