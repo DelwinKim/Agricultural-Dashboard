@@ -26,5 +26,6 @@ jobs:
       - name: Run management command
         env:
           DATABASE_URL: ${{ secrets.RENDER_DATABASE_URL }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         run: |
           python manage.py scrape_data
