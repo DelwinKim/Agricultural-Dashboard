@@ -1,1 +1,7 @@
 sass --watch weatherdashboard/static/weatherdashboard/scss/styles.scss:weatherdashboard/static/weatherdashboard/css/styles.css
+
+pg_dump -U myuser -h localhost -d agricultural_dashboard_db > local_db_dump.sql
+
+PGPASSWORD=oc1iqeVhGlhQlZjGB3da4gbGTsQao8Pw psql -h dpg-cu0o8grtq21c73bvvq8g-a.ohio-postgres.render.com -U agricultural_dashboard_db_user -d agricultural_dashboard_db
+
+PGPASSWORD=oc1iqeVhGlhQlZjGB3da4gbGTsQao8Pw psql -h dpg-cu0o8grtq21c73bvvq8g-a.ohio-postgres.render.com -U agricultural_dashboard_db_user -d agricultural_dashboard_db < local_db_dump.sql
