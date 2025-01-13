@@ -282,33 +282,34 @@ DataTable.pipeline = function (opts) {
         if (requestLength == -1) {
             requestLength = cacheLastJson.recordsTotal;  // Show all records
             request.length = requestLength;  // Modify the request length
-        } else if (requestLength == -2) { // Handling the "Custom" option
-            // Logic for handling custom select option
-            let customLength = prompt("Enter the number of entries to display per page:", 7);
-            
-            if (customLength !== null) {
-                customLength = parseInt(customLength, 10);
-
-                // Validate customLength: positive number and not too large
-                if (isNaN(customLength) || customLength <= 0 || customLength > 10000) {
-                    alert("Please enter a valid number between 1 and 10000.");
-                    requestLength = 7;  // Revert to default
-                } else {
-                    requestLength = customLength;  // Use custom length
-                }
-            } else {
-                requestLength = 7;  // If prompt is canceled, revert to default
-            }
-            // Update the request length
-            request.length = requestLength;
-
-            // Update the DataTable's pagination length
-            const lengthSelect = $(`select[name="${request.table_name}_length"]`);
-            console.log(request.table_name);
-            lengthSelect.append(new Option(`Custom (${customLength})`, customLength));  // Add the new option
-            lengthSelect.val(customLength);  // Select the custom length option        
-            console.log(lengthSelect);
         }
+        //  else if (requestLength == -2) { // Handling the "Custom" option
+        //     // Logic for handling custom select option
+        //     let customLength = prompt("Enter the number of entries to display per page:", 7);
+            
+        //     if (customLength !== null) {
+        //         customLength = parseInt(customLength, 10);
+
+        //         // Validate customLength: positive number and not too large
+        //         if (isNaN(customLength) || customLength <= 0 || customLength > 10000) {
+        //             alert("Please enter a valid number between 1 and 10000.");
+        //             requestLength = 7;  // Revert to default
+        //         } else {
+        //             requestLength = customLength;  // Use custom length
+        //         }
+        //     } else {
+        //         requestLength = 7;  // If prompt is canceled, revert to default
+        //     }
+        //     // Update the request length
+        //     request.length = requestLength;
+
+        //     // Update the DataTable's pagination length
+        //     const lengthSelect = $(`select[name="${request.table_name}_length"]`);
+        //     console.log(request.table_name);
+        //     lengthSelect.append(new Option(`Custom (${customLength})`, customLength));  // Add the new option
+        //     lengthSelect.val(customLength);  // Select the custom length option        
+        //     console.log(lengthSelect);
+        // }
 
         var requestEnd = requestStart + requestLength;
         console.log("Request start: " + requestStart);
@@ -447,8 +448,8 @@ function initializeTable(tableId) {
             "pageLength": 7,
             autoWidth: false,
             "lengthMenu": [
-                [7, 14, 30, 90, 365, -1, -2],
-                [7, 14, 30, 90, 365, "All", "Custom"],
+                [7, 14, 30, 90, 365, -1],
+                [7, 14, 30, 90, 365, "All"],
             ],
            "ajax": DataTable.pipeline({
                 url: tableConfigObject.tableUrl,
