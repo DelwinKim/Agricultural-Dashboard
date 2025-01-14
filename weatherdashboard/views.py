@@ -8,6 +8,9 @@ from django.http import HttpResponseForbidden
 from .models import GeneralWeatherData, DetailedWeatherData, HeatUnitsData, SeasonalChillUnitsData
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
+from .forms import DataDownloadForm
+import csv
+from django.http import HttpResponse
 
 regions_and_stations = {"Coastal Bend":  ["Corpus Christi Agrilife", "Corpus Christi North", "Corpus Christi South", "Dickinson", 
                                           "Driscoll", "Freer", "Garwood", "Goliad", "Houston", "Houston North", "Kingsville", 
@@ -112,3 +115,88 @@ def fetch_data_for_tables(request, station_name):
     }
 
     return JsonResponse(response)
+
+
+def download_data(request):
+    if request.method == 'POST':
+        form = DataDownloadForm(request.POST)
+        if form.is_valid():
+            station = form.cleaned_data['station']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            selected_fields = form.cleaned_data['fields']
+
+            # Ensure 'date' is always included
+            fields = ['date'] + selected_fields
+
+            # Dictionary to merge data by date
+            merged_data = {}
+
+            # Process GeneralWeatherData
+            if any(field in selected_fields for field in ['eto', 'max_temp', 'min_temp', 'min_rh', 'solar_rad', 'rainfall', 'wind_4am', 'wind_4pm', 'battery_min', 'battery_max']):
+                general_weather_data = GeneralWeatherData.objects.filter(
+                    station=station, date__range=[start_date, end_date]
+                )
+                for obj in general_weather_data:
+                    date = obj.date.strftime('%Y-%m-%d')
+                    if date not in merged_data:
+                        merged_data[date] = {'date': date}
+                    merged_data[date].update({field: getattr(obj, field, None) for field in selected_fields if hasattr(obj, field)})
+
+            # Process DetailedWeatherData
+            if any(field in selected_fields for field in ['average_temp', 'dew_point', 'max_dewpoint', 'min_dewpoint', 'wind_run', 'soil_temp']):
+                detailed_weather_data = DetailedWeatherData.objects.filter(
+                    station=station, date__range=[start_date, end_date]
+                )
+                for obj in detailed_weather_data:
+                    date = obj.date.strftime('%Y-%m-%d')
+                    if date not in merged_data:
+                        merged_data[date] = {'date': date}
+                    merged_data[date].update({field: getattr(obj, field, None) for field in selected_fields if hasattr(obj, field)})
+
+            # Process HeatUnitsData
+            if any(field in selected_fields for field in ['corn_heat_units', 'cotton_heat_units', 'sorghum_heat_units', 'heat_units_50_degree', 'heat_units_55_degree', 'heat_units_60_degree']):
+                heat_units_data = HeatUnitsData.objects.filter(
+                    station=station, date__range=[start_date, end_date]
+                )
+                for obj in heat_units_data:
+                    date = obj.date.strftime('%Y-%m-%d')
+                    if date not in merged_data:
+                        merged_data[date] = {'date': date}
+                    merged_data[date].update({field: getattr(obj, field, None) for field in selected_fields if hasattr(obj, field)})
+
+            # Process SeasonalChillUnitsData
+            if any(field in selected_fields for field in ['method_1_total', 'method_2_total']):
+                seasonal_chill_units_data = SeasonalChillUnitsData.objects.filter(
+                    station=station, month__range=[start_date, end_date]
+                ).annotate(date=F('month'))
+                for obj in seasonal_chill_units_data:
+                    date = obj.date.strftime('%Y-%m-%d')
+                    if date not in merged_data:
+                        merged_data[date] = {'date': date}
+                    merged_data[date].update({field: getattr(obj, field, None) for field in selected_fields if hasattr(obj, field)})
+
+            # Convert merged data to a list of rows
+            merged_rows = [merged_data[date] for date in sorted(merged_data.keys())]
+
+            # Handle cases where no data is found
+            if not merged_rows:
+                return HttpResponse("No data found for the selected fields and date range.", status=400)
+
+            # Prepare the CSV response
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename="data_{station.name}_{start_date}_to_{end_date}.csv"'
+
+            writer = csv.writer(response)
+            writer.writerow(fields)  # Write header row
+            for row in merged_rows:
+                writer.writerow([row.get(field, 'N/A') for field in fields])  # Fill missing fields with 'N/A'
+
+            return response
+    else:
+        form = DataDownloadForm()
+
+    return render(request, 'weatherdashboard/download_data.html', {
+        'form': form,
+        'regions_and_stations': regions_and_stations,
+    })

@@ -5,7 +5,7 @@ class WeatherStation(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.name} (ID: {self.station_id})"
+        return f"{self.name}"
 
 class GeneralWeatherData(models.Model):
     station = models.ForeignKey(WeatherStation, on_delete=models.CASCADE)

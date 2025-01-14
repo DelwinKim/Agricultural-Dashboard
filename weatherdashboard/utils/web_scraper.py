@@ -21,9 +21,24 @@ def scrape_table(url, table_id, station_id):
         return []
     soup = BeautifulSoup(response.text, 'html.parser')
     if table_id == "chillUnits":
-        table = soup.find('div', id=table_id).find_all('table')[1]
+        table_div = soup.find('div', id=table_id)
+        if not table_div:
+            print(f"Failed to find div with id: {table_id}")
+            return []
+        table = table_div.find_all('table')[1]
+        if not table:
+            print(f"Failed to find table within div")
+            return []
     else:
-        table = soup.find('div', id=table_id).find('table')
+        table_div = soup.find('div', id=table_id)
+        if not table_div:
+            print(f"Failed to find div with id: {table_id}")
+            return []
+        table = table_div.find('table')
+        if not table:
+            print(f"Failed to find div with id: {table_id}")
+            return []
+
     rows = table.find_all('tr')
     data = []
     count = 1
