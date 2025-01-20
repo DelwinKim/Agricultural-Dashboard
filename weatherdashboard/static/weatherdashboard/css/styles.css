@@ -12180,18 +12180,18 @@ body {
   overflow-x: auto;
 }
 
-.dataTable > colgroup > col,
-.dataTable > tbody > tr > td,
-.dataTable > tfoot > tr > td,
-.dataTable > tfoot > tr > th,
-.dataTable > thead > tr > th {
+colgroup > col,
+tbody > tr > td,
+tfoot > tr > td,
+tfoot > tr > th,
+thead > tr > th {
   vertical-align: middle !important;
   padding: 0.5rem 0.5rem !important;
   text-align: center !important;
 }
 
-.dataTable th:nth-child(1),
-.dataTable td:nth-child(1) {
+th:nth-child(1),
+td:nth-child(1) {
   text-align: left !important;
 }
 

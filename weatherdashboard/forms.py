@@ -50,7 +50,7 @@ class DataDownloadForm(forms.Form):
             # ('method_2_total', 'Method 2 Total'),
         ],
         required=True,
-        widget=forms.SelectMultiple(attrs={'class': 'dropdown_ex'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control dropdown_ex'}),
         label="Fields to Include"
     )
 

@@ -35,8 +35,10 @@
 
             <!-- Multi-Select Dropdown -->
             <div class="row mb-4">
+                <div class="col-md-12">
                     <label for="id_fields" class="form-label">{{ form.fields.label }}</label>
                     {{ form.fields }}
+                </div>
             </div>
 
             <!-- Submit Button -->
@@ -54,7 +56,8 @@
 <script>
     $(document).ready(function() {
         $('.dropdown_ex').select2({
-            // allowClear: true
+            placeholder: "Select Options", // Placeholder for the dropdown
+            allowClear: true,
         });
     });
 </script>

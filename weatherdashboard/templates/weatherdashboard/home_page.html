@@ -7,77 +7,69 @@
         padding-left: 0 !important;
         margin-left: 0 !important;
     }
-    .card {
-        max-width: 65%; /* Set the desired maximum width */
-        margin: 0 auto; /* Center the card */
-    }
     #stationsTable {
-        width: 100%; 
+        max-width: 60%;
+        margin: 0 auto; 
     }
-    /* Custom styles to remove underline from links */
+    #stationsTableField {
+        background-color: #E5F4E7;
+        font-weight: normal !important
+    }
     .station-link {
         text-decoration: none;
     }
     .station-link:hover {
-        text-decoration: underline; /* Optional: underline on hover */
+        text-decoration: underline; 
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid px-4">
-    <!-- <h1 class="mt-4">Main Page</h1> -->
-    <div class="card mb-5 mt-5">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            Yesterday's Weather Summary
-        </div>
-        <div class="card-body">
-            <table id="stationsTable" class="display">
-                <thead>
+    <div class="table-responsive mb-5 mt-5">
+        <table id="stationsTable" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th colspan="9" style="text-align: center !important; background-color: #a5a9ac25; font-weight: normal !important">
+                        <i class="fas fa-table me-1"></i>
+                        Yesterday's Weather Summary
+                    </th>
+                </tr>
+
+                <tr>
+                    <th id="stationsTableField">Station</th>
+                    <th id="stationsTableField">ETo<br>(in.)</th>
+                    <th id="stationsTableField">Max Temp<br>(&deg;F)</th>
+                    <th id="stationsTableField">Min Temp<br>(&deg;F)</th>
+                    <th id="stationsTableField">Min RH<br>(%)</th>
+                    <th id="stationsTableField">Solar Rad.<br>(MJ/m2)</th>
+                    <th id="stationsTableField">Rainfall<br>(in.)</th>
+                    <th id="stationsTableField">Wind 4am<br>(mph)</th>
+                    <th id="stationsTableField">Wind 4pm<br>(mph)</th>
+                </tr>
+
+                <tr>
+                    <th colspan="9" style="text-align: center !important; background-color: #a5a9ac25; font-weight: normal !important">
+                        Coastal Bend
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for station_name, weather_object in recent_weather_data.items %}
                     <tr>
-                        <th>Station</th>
-                        <th>ETo<br>(in.)</th>
-                        <th>Max Temp<br>(&deg;F)</th>
-                        <th>Min Temp<br>(&deg;F)</th>
-                        <th>Min RH<br>(%)</th>
-                        <th>Solar Rad.<br>(MJ/m2)</th>
-                        <th>Rainfall<br>(in.)</th>
-                        <th>Wind 4am<br>(mph)</th>
-                        <th>Wind 4pm<br>(mph)</th>
+                        <td><a href="{% url 'station' station_name=station_name %}" class="station-link">{{ station_name }}</a></td>
+                        <td>{{ weather_object.eto}}</td>
+                        <td>{{ weather_object.max_temp }}</td>
+                        <td>{{ weather_object.min_temp }}</td>
+                        <td>{{ weather_object.min_rh }}</td>
+                        <td>{{ weather_object.solar_rad }}</td>
+                        <td>{{ weather_object.rainfall }}</td>
+                        <td>{{ weather_object.wind_4am }}</td>
+                        <td>{{ weather_object.wind_4pm }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for station_name, weather_object in recent_weather_data.items %}
-                        <tr>
-                            <td><a href="{% url 'station' station_name=station_name %}" class="station-link">{{ station_name }}</a></td>
-                            <td>{{ weather_object.eto}}</td>
-                            <td>{{ weather_object.max_temp }}</td>
-                            <td>{{ weather_object.min_temp }}</td>
-                            <td>{{ weather_object.min_rh }}</td>
-                            <td>{{ weather_object.solar_rad }}</td>
-                            <td>{{ weather_object.rainfall }}</td>
-                            <td>{{ weather_object.wind_4am }}</td>
-                            <td>{{ weather_object.wind_4pm }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    $(document).ready(function() {
-        $('#stationsTable').DataTable({
-            "ordering": false,
-            "searching": false,
-            "paging": false,
-            autoWidth: false,
-            info: false,
-        });
-    });
-</script>
 {% endblock %}
