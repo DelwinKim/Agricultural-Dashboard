@@ -32,12 +32,13 @@ def home_page(request):
     central = ZoneInfo("America/Chicago")
     now_central = datetime.now(central)
     yesterday_central = (now_central - timedelta(days=1)).date()
+    two_days_ago = (now_central - timedelta(days=2)).date()
     
     # Fetch the most recent general weather data for each station
     recent_weather_data = {}
     for station in regions_and_stations["Coastal Bend"]:
         recent_weather = GeneralWeatherData.objects.filter(station__name=station).order_by('-date').first()
-        if recent_weather and recent_weather.date == yesterday_central:
+        if recent_weather and (recent_weather.date == yesterday_central or recent_weather.date == two_days_ago):
             recent_weather_data[station] = recent_weather
     
     return render(request, "weatherdashboard/home_page.html", {
@@ -166,15 +167,15 @@ def download_data(request):
                     merged_data[date].update({field: getattr(obj, field, None) for field in selected_fields if hasattr(obj, field)})
 
             # Process SeasonalChillUnitsData
-            if any(field in selected_fields for field in ['method_1_total', 'method_2_total']):
-                seasonal_chill_units_data = SeasonalChillUnitsData.objects.filter(
-                    station=station, month__range=[start_date, end_date]
-                ).annotate(date=F('month'))
-                for obj in seasonal_chill_units_data:
-                    date = obj.date.strftime('%Y-%m-%d')
-                    if date not in merged_data:
-                        merged_data[date] = {'date': date}
-                    merged_data[date].update({field: getattr(obj, field, None) for field in selected_fields if hasattr(obj, field)})
+            # if any(field in selected_fields for field in ['method_1_total', 'method_2_total']):
+            #     seasonal_chill_units_data = SeasonalChillUnitsData.objects.filter(
+            #         station=station, month__range=[start_date, end_date]
+            #     ).annotate(date=F('month'))
+            #     for obj in seasonal_chill_units_data:
+            #         date = obj.date.strftime('%Y-%m-%d')
+            #         if date not in merged_data:
+            #             merged_data[date] = {'date': date}
+            #         merged_data[date].update({field: getattr(obj, field, None) for field in selected_fields if hasattr(obj, field)})
 
             # Convert merged data to a list of rows
             merged_rows = [merged_data[date] for date in sorted(merged_data.keys())]
