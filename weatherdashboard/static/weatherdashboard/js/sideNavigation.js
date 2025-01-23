@@ -32,9 +32,9 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
     // Set the default state for the graph accordion to be expanded
-    if (!localStorage.getItem('sb|graphs-accordion-open')) {
-        localStorage.setItem('sb|graphs-accordion-open', 'true'); // Set to expanded by default
-    }
+    // if (!localStorage.getItem('sb|graphs-accordion-open')) {
+    //     localStorage.setItem('sb|graphs-accordion-open', 'true'); // Set to expanded by default
+    // }
     
     // Restore accordion states from localStorage
     if (localStorage.getItem('sb|tables-accordion-open') === 'true') {
@@ -45,13 +45,13 @@ window.addEventListener('DOMContentLoaded', event => {
         document.getElementById('collapseTables').classList.remove('show'); // Ensure the content is hidden
     }
 
-    if (localStorage.getItem('sb|graphs-accordion-open') === 'true') {
-        graphsLink.classList.remove('collapsed'); // Remove 'collapsed' class to show it's expanded
-        document.getElementById('collapseGraphs').classList.add('show'); // Ensure the content is shown
-    } else {
-        graphsLink.classList.add('collapsed'); // Add 'collapsed' class to indicate it's collapsed
-        document.getElementById('collapseGraphs').classList.remove('show'); // Ensure the content is hidden
-    }
+    // if (localStorage.getItem('sb|graphs-accordion-open') === 'true') {
+    //     graphsLink.classList.remove('collapsed'); // Remove 'collapsed' class to show it's expanded
+    //     document.getElementById('collapseGraphs').classList.add('show'); // Ensure the content is shown
+    // } else {
+    //     graphsLink.classList.add('collapsed'); // Add 'collapsed' class to indicate it's collapsed
+    //     document.getElementById('collapseGraphs').classList.remove('show'); // Ensure the content is hidden
+    // }
 
     // Event listeners for the accordion buttons
     if (tablesLink) {
