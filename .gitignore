@@ -21,3 +21,4 @@ __pycache__/
 /weatherdashboard/static/weatherdashboard/scss
 
 data.json
+local_db_dump.sql
