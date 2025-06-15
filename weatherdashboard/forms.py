@@ -54,10 +54,10 @@ class DataDownloadForm(forms.Form):
         label="Fields to Include"
     )
 
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     start_date = cleaned_data.get("start_date")
-    #     end_date = cleaned_data.get("end_date")
-    #     if start_date and end_date and start_date > end_date:
-    #         raise forms.ValidationError("Start Date cannot be after End Date.")
-    #     return cleaned_data
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
+        if start_date and end_date and start_date > end_date:
+            raise forms.ValidationError("Start Date cannot be after End Date.")
+        return cleaned_data
