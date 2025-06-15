@@ -19,6 +19,7 @@ __pycache__/
 .env
 
 /weatherdashboard/static/weatherdashboard/scss
+/weatherdashboard/important_commands.txt
 
 data.json
 local_db_dump.sql
