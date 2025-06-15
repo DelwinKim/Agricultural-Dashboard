@@ -201,3 +201,6 @@ def download_data(request):
         'form': form,
         'regions_and_stations': regions_and_stations,
     })
+
+def ping_view(request):
+    return HttpResponse("pong")

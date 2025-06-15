@@ -8,4 +8,5 @@ urlpatterns = [
     path("station/<str:station_name>/", views.station, name="station"),
     path("station/<str:station_name>/fetch-data/", views.fetch_data_for_tables, name="fetch_data_for_tables"),
     path("download-data/", views.download_data, name="download_data"),
+    path("ping/", views.ping_view, name="ping_view"),
 ]

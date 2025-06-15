@@ -3,14 +3,21 @@ sass --watch weatherdashboard/static/weatherdashboard/scss/styles.scss:weatherda
 # to dump my local database to file
 pg_dump -U myuser -h localhost -d agricultural_dashboard_db > local_db_dump.sql
 
+# to dump from file to local
+psql -U myuser -h localhost -d agricultural_dashboard_db -f local_db_dump.sql
+
 #to gain access to remote database
 PGPASSWORD=oc1iqeVhGlhQlZjGB3da4gbGTsQao8Pw psql -h dpg-cu0o8grtq21c73bvvq8g-a.ohio-postgres.render.com -U agricultural_dashboard_db_user -d agricultural_dashboard_db
 
 # to dump everything from my local database file to my remote database
-PGPASSWORD=oc1iqeVhGlhQlZjGB3da4gbGTsQao8Pw psql -h dpg-cu0o8grtq21c73bvvq8g-a.ohio-postgres.render.com -U agricultural_dashboard_db_user -d agricultural_dashboard_db < local_db_dump.sql
+PGPASSWORD=UOdYerjLkrXfGrhOSjPjWHQXnm74OejL psql -h dpg-cu0o8grtq21c73bvvq8g-a.ohio-postgres.render.com -U agricultural_dashboard_db_user -d agricultural_dashboard_db < local_db_dump.sql
 
 # for my new database
-PGPASSWORD=xzD0eAHHXoUHJiozjAUJwvT256jCiboV psql -h dpg-cuf7ri23esus73dv6s6g-a.ohio-postgres.render.com -U agricultural_dashboard_db_a36d_user -d agricultural_dashboard_db_a36d < local_db_dump.sql
+PGPASSWORD=rPACQqON9GVfxXqlf9G2x3Kl4za8rDPv psql -h dpg-d0qbr10dl3ps73eqtgfg-a.ohio-postgres.render.com -U agricultural_dashboard_db_6hvi_user agricultural_dashboard_db_6hvi < test_dump.sql
+
+# dump from remote database to SQL file
+PGPASSWORD="UOdYerjLkrXfGrhOSjPjWHQXnm74OejL" pg_dump -h dpg-d086mkvgi27c7387ihb0-a.ohio-postgres.render.com -U agricultural_dashboard_db_f04d_user -d agricultural_dashboard_db_f04d -F p --clean --if-exists --no-owner --no-acl -v -f test_dump.sql
 
 To test project locally:
 python -m gunicorn BootstrapAgrilife.asgi:application -k uvicorn.workers.UvicornWorker
+
