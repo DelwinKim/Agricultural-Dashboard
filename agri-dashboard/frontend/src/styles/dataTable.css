@@ -1,0 +1,105 @@
+/* Table Color Scheme */
+:root {
+    --general-weather-bg: #E5F4E7;
+    --general-weather-header: #C1E1C5;
+    --detailed-weather-bg: #E8E8E8;
+    --detailed-weather-header: #D4D4D4;
+    --heat-units-bg: #FFF5EE;
+    --heat-units-header: #F4E1D2;
+    --chill-units-bg: #E3F2FD;
+    --chill-units-header: #BBDEFB;
+    --gray-100: #f8f9fa;
+    --gray-300: #dee2e6;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+}
+
+/* Table Styles */
+.dt-container .dataTable {
+    font-size: 0.875rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+}
+
+.dt-container .dataTable th,
+.dt-container .dataTable td {
+    vertical-align: middle !important;
+    padding: 0.5rem !important;
+    text-align: center !important;
+    border: 1px solid #dee2e6;
+}
+
+.dt-container .dataTable th:first-child,
+.dt-container .dataTable td:first-child {
+    text-align: left !important;
+}
+
+.dt-container .dataTable tfoot td {
+    font-weight: bold;
+}
+
+/* Table Wrapper Styles */
+#generalWeatherTableWrapper .card-body {
+    background-color: var(--general-weather-bg);
+}
+
+#generalWeatherTableWrapper .card-header {
+    background-color: var(--general-weather-header);
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#detailedWeatherTableWrapper .card-body {
+    background-color: var(--detailed-weather-bg);
+}
+
+#detailedWeatherTableWrapper .card-header {
+    background-color: var(--detailed-weather-header);
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#heatUnitsTableWrapper .card-body {
+    background-color: var(--heat-units-bg);
+}
+
+#heatUnitsTableWrapper .card-header {
+    background-color: var(--heat-units-header);
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#seasonalChillUnitsTableWrapper .card-body {
+    background-color: var(--chill-units-bg);
+}
+
+#seasonalChillUnitsTableWrapper .card-header {
+    background-color: var(--chill-units-header);
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* DataTable Controls */
+.dt-length select {
+    display: inline-block;
+    padding-left: 1.125rem;
+    padding-right: 2.125rem;
+    margin-right: 0.25rem;
+}
+
+.dt-length, .dt-info {
+    float: left;
+}
+
+.dt-paging {
+    float: right;
+}
+
+.dt-container {
+    overflow-x: auto;
+}

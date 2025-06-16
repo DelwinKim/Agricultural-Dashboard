@@ -16,7 +16,7 @@ PGPASSWORD=UOdYerjLkrXfGrhOSjPjWHQXnm74OejL psql -h dpg-cu0o8grtq21c73bvvq8g-a.o
 PGPASSWORD=rPACQqON9GVfxXqlf9G2x3Kl4za8rDPv psql -h dpg-d0qbr10dl3ps73eqtgfg-a.ohio-postgres.render.com -U agricultural_dashboard_db_6hvi_user agricultural_dashboard_db_6hvi < test_dump.sql
 
 # dump from remote database to SQL file
-PGPASSWORD="UOdYerjLkrXfGrhOSjPjWHQXnm74OejL" pg_dump -h dpg-d086mkvgi27c7387ihb0-a.ohio-postgres.render.com -U agricultural_dashboard_db_f04d_user -d agricultural_dashboard_db_f04d -F p --clean --if-exists --no-owner --no-acl -v -f test_dump.sql
+PGPASSWORD="rPACQqON9GVfxXqlf9G2x3Kl4za8rDPv" pg_dump -h dpg-d0qbr10dl3ps73eqtgfg-a.ohio-postgres.render.com -U agricultural_dashboard_db_6hvi_user -d agricultural_dashboard_db_6hvi -F p --clean --if-exists --no-owner --no-acl -v -f test_dump.sql
 
 To test project locally:
 python -m gunicorn BootstrapAgrilife.asgi:application -k uvicorn.workers.UvicornWorker

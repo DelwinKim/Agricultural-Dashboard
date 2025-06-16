@@ -1,9 +1,11 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, Response
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import logging
 from app.models.weather import WeatherStation, GeneralWeatherData, DetailedWeatherData, HeatUnitsData, SeasonalChillUnitsData, ChillUnitsData
 from app import db
+import csv
+from io import StringIO
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -126,11 +128,20 @@ def get_chill_units_table():
         logger.info(f"Fetching chill units for station {station.name}")
         data = SeasonalChillUnitsData.query.filter_by(station_id=station.id).order_by(SeasonalChillUnitsData.month_num.desc()).all()
         logger.info(f"Found {len(data)} records")
+
+        # Calculate totals
+        total_method_1 = sum(record.method_1_total for record in data)
+        total_method_2 = sum(record.method_2_total for record in data)
+
         return jsonify({
             'draw': request.args.get('draw', type=int),
             'recordsTotal': len(data),
             'recordsFiltered': len(data),
-            'data': [record.to_dict() for record in data]
+            'data': [record.to_dict() for record in data],
+            'totals': {
+                'method_1_total': total_method_1,
+                'method_2_total': total_method_2
+            }
         })
     except Exception as e:
         logger.error(f"Error fetching chill units: {str(e)}")
@@ -162,4 +173,86 @@ def get_recent_weather():
         return jsonify(recent_weather_data)
     except Exception as e:
         logger.error(f"Error fetching recent weather: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@weather_bp.route('/download-data', methods=['POST'])
+def download_data():
+    try:
+        data = request.get_json()
+        station_id = data.get('station')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        fields = data.get('fields', [])
+
+        if not all([station_id, start_date, end_date, fields]):
+            return jsonify({'error': 'Missing required parameters'}), 400
+
+        # Ensure 'date' is always included
+        fields = ['date'] + fields
+
+        # Dictionary to merge data by date
+        merged_data = {}
+
+        # Process GeneralWeatherData
+        if any(field in fields for field in ['eto', 'max_temp', 'min_temp', 'min_rh', 'solar_rad', 'rainfall', 'wind_4am', 'wind_4pm', 'battery_min', 'battery_max']):
+            general_weather_data = GeneralWeatherData.query.filter(
+                GeneralWeatherData.station_id == station_id,
+                GeneralWeatherData.date.between(start_date, end_date)
+            ).all()
+            for obj in general_weather_data:
+                date = obj.date.strftime('%Y-%m-%d')
+                if date not in merged_data:
+                    merged_data[date] = {'date': date}
+                merged_data[date].update({field: getattr(obj, field, None) for field in fields if hasattr(obj, field)})
+
+        # Process DetailedWeatherData
+        if any(field in fields for field in ['average_temp', 'dew_point', 'max_dewpoint', 'min_dewpoint', 'wind_run', 'soil_temp']):
+            detailed_weather_data = DetailedWeatherData.query.filter(
+                DetailedWeatherData.station_id == station_id,
+                DetailedWeatherData.date.between(start_date, end_date)
+            ).all()
+            for obj in detailed_weather_data:
+                date = obj.date.strftime('%Y-%m-%d')
+                if date not in merged_data:
+                    merged_data[date] = {'date': date}
+                merged_data[date].update({field: getattr(obj, field, None) for field in fields if hasattr(obj, field)})
+
+        # Process HeatUnitsData
+        if any(field in fields for field in ['corn_heat_units', 'cotton_heat_units', 'sorghum_heat_units', 'heat_units_50_degree', 'heat_units_55_degree', 'heat_units_60_degree']):
+            heat_units_data = HeatUnitsData.query.filter(
+                HeatUnitsData.station_id == station_id,
+                HeatUnitsData.date.between(start_date, end_date)
+            ).all()
+            for obj in heat_units_data:
+                date = obj.date.strftime('%Y-%m-%d')
+                if date not in merged_data:
+                    merged_data[date] = {'date': date}
+                merged_data[date].update({field: getattr(obj, field, None) for field in fields if hasattr(obj, field)})
+
+        # Convert merged data to a list of rows
+        merged_rows = [merged_data[date] for date in sorted(merged_data.keys())]
+
+        # Handle cases where no data is found
+        if not merged_rows:
+            return jsonify({'error': 'No data found for the selected fields and date range'}), 400
+
+        # Create CSV response
+        output = StringIO()
+        writer = csv.writer(output)
+        writer.writerow(fields)  # Write header row
+        for row in merged_rows:
+            writer.writerow([row.get(field, 'N/A') for field in fields])  # Fill missing fields with 'N/A'
+
+        # Prepare the response
+        output.seek(0)
+        return Response(
+            output.getvalue(),
+            mimetype='text/csv',
+            headers={
+                'Content-Disposition': f'attachment; filename=weather_data_{station_id}_{start_date}_to_{end_date}.csv'
+            }
+        )
+
+    except Exception as e:
+        logger.error(f"Error downloading data: {str(e)}")
         return jsonify({'error': str(e)}), 500 

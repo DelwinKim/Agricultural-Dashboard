@@ -3,6 +3,13 @@ import { WeatherStation, GeneralWeatherData, DetailedWeatherData, HeatUnitsData,
 
 const API_BASE_URL = 'http://localhost:5000/api';
 
+interface DownloadDataParams {
+    station: number;
+    start_date: string;
+    end_date: string;
+    fields: string[];
+}
+
 const api = {
     API_BASE_URL,
     // Get all weather stations
@@ -60,6 +67,14 @@ const api = {
     getRecentWeather: async (): Promise<Record<string, GeneralWeatherData>> => {
         const response = await axios.get(`${API_BASE_URL}/recent-weather`);
         return response.data;
+    },
+
+    // Download data
+    downloadData: async (params: DownloadDataParams): Promise<any> => {
+        const response = await axios.post(`${API_BASE_URL}/download-data`, params, {
+            responseType: 'blob'
+        });
+        return response;
     }
 };
 

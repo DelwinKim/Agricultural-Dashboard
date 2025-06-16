@@ -209,9 +209,18 @@ const tableConfig = {
         tableUrl: `${API_BASE_URL}/weather/chill-units/`,
         columns: [
             { "data": "month" },
-            { "data": "method_1" },
-            { "data": "method_2" },
+            { "data": "method_1_total" },
+            { "data": "method_2_total" },
         ],
+        drawCallback: function(settings) {
+            const api = this.api();
+            const json = api.ajax.json();
+            if (json && json.totals) {
+                $(api.column(0).footer()).html('Total');
+                $(api.column(1).footer()).html(json.totals.method_1_total);
+                $(api.column(2).footer()).html(json.totals.method_2_total);
+            }
+        }
     },
 };
 
@@ -221,40 +230,37 @@ function toggleTable(tableId) {
     const tableWrapper = document.getElementById(tableId + "Wrapper");
     const button = document.querySelector(`[data-table="${tableId}"]`);
     const topNav = document.querySelector('.sb-topnav');
-    const topNavHeight = topNav ? topNav.offsetHeight : 0; // Get height of the top nav if it exists
-    const margin = parseFloat(getComputedStyle(document.documentElement).fontSize) * 3; // 1.5rem to pixels
+    const topNavHeight = topNav ? topNav.offsetHeight : 0;
+    const margin = parseFloat(getComputedStyle(document.documentElement).fontSize) * 3;
 
     if (tableWrapper && button) {
         if (tableWrapper.style.display === "none") {
             tableWrapper.style.display = "";
-            localStorage.setItem(tableId, 'enabled'); // Store state as 'enabled'
-            button.classList.add('btn-filled'); // Add the filled style
-            button.classList.remove('btn-outline-light'); // Remove the outline style
+            localStorage.setItem(tableId, 'enabled');
+            button.classList.add('btn-filled');
+            button.classList.remove('btn-outline-light');
             
-            // Initialize DataTable only when the table has not yet been initialized
             if (!$.fn.DataTable.isDataTable(`#${tableId}`)) {
                 initializeTable(tableId);
             }
 
-            // Special case for generalWeatherTable to scroll all the way to the top
             if (tableId === 'generalWeatherTable') {
                 window.scrollTo({
-                    top: 0, // Scroll to the top of the page
-                    behavior: 'smooth' // Smooth scroll effect
+                    top: 0,
+                    behavior: 'smooth'
                 });
             } else {
-                // For other tables, scroll to the calculated position with margin
                 const scrollToPosition = tableWrapper.getBoundingClientRect().top + window.scrollY - topNavHeight - margin;
                 window.scrollTo({
-                    top: scrollToPosition, // Position just below the fixed top navigation with `mb-5` margin
-                    behavior: 'smooth' // Smooth scroll effect
+                    top: scrollToPosition,
+                    behavior: 'smooth'
                 });
             }
         } else {
             tableWrapper.style.display = "none";
-            localStorage.setItem(tableId, 'disabled'); // Store state as 'disabled'
-            button.classList.remove('btn-filled'); // Remove the filled style
-            button.classList.add('btn-outline-light'); // Re-add the outline style
+            localStorage.setItem(tableId, 'disabled');
+            button.classList.remove('btn-filled');
+            button.classList.add('btn-outline-light');
         }
     }
 }
@@ -474,14 +480,33 @@ function initializeTable(tableId) {
             "columns": tableConfigObject.columns,
             "footerCallback": tableConfigObject.footerCallback  
         });
-    } else {  // for seasonal chill units table, no ajax (static rendering)
+    } else {  // for seasonal chill units table, static rendering
         const table = $(`#${tableId}`).DataTable({
+            "processing": true,
+            "serverSide": false,
             "ordering": false,
             "searching": false,
             "paging": false,
             autoWidth: false,
             info: false,
+            "ajax": {
+                url: tableConfigObject.tableUrl,
+                type: "GET",
+                data: function(d) {
+                    d.station_name = stationName;
+                    return d;
+                }
+            },
             "columns": tableConfigObject.columns,
+            "drawCallback": function(settings) {
+                const api = this.api();
+                const json = api.ajax.json();
+                if (json && json.totals) {
+                    $(api.column(0).footer()).html('Total');
+                    $(api.column(1).footer()).html(json.totals.method_1_total);
+                    $(api.column(2).footer()).html(json.totals.method_2_total);
+                }
+            }
         });
     }
     
@@ -491,39 +516,83 @@ function initializeTable(tableId) {
 
 // Initialize the default table and check states on page load
 $(document).ready(function() {
-    // Initialize the default table
-    initializeTable('generalWeatherTable');
-    localStorage.setItem('generalWeatherTable', 'enabled');
-    const defaultButton = document.querySelector('[data-table="generalWeatherTable"]');
-    if (defaultButton) {
-        defaultButton.classList.add('btn-filled');
-        defaultButton.classList.remove('btn-outline-light');
-    }
+    // Hide all table wrappers initially
+    const allWrappers = document.querySelectorAll('[id$="Wrapper"]');
+    allWrappers.forEach(wrapper => {
+        wrapper.style.display = "none";
+    });
 
-    // Check other tables' states and initialize if previously enabled
-    const tables = ['detailedWeatherTable', 'heatUnitsTable', 'seasonalChillUnitsTable'];
+    // Check if this is the first visit
+    const isFirstVisit = !localStorage.getItem('hasVisitedBefore');
     
-    tables.forEach(tableId => {
-        const state = localStorage.getItem(tableId);
-        const button = document.querySelector(`[data-table="${tableId}"]`);
-        const wrapper = document.getElementById(tableId + "Wrapper");
+    if (isFirstVisit) {
+        // First visit - only show general summary
+        localStorage.setItem('hasVisitedBefore', 'true');
+        localStorage.setItem('generalWeatherTable', 'enabled');
+        localStorage.setItem('detailedWeatherTable', 'disabled');
+        localStorage.setItem('heatUnitsTable', 'disabled');
+        localStorage.setItem('seasonalChillUnitsTable', 'disabled');
+        
+        // Set all button states first
+        const allButtons = document.querySelectorAll('[data-table]');
+        allButtons.forEach(button => {
+            button.classList.remove('btn-filled');
+            button.classList.add('btn-outline-light');
+        });
 
-        if (state === 'enabled' && wrapper) {
-            wrapper.style.display = "";
-            if (button) {
-                button.classList.add('btn-filled');
-                button.classList.remove('btn-outline-light');
-            }
-            if (!$.fn.DataTable.isDataTable(`#${tableId}`)) {
-                initializeTable(tableId);
-            }
-        } else if (wrapper) {
-            wrapper.style.display = "none";
-            if (button) {
-                button.classList.remove('btn-filled');
-                button.classList.add('btn-outline-light');
+        // Set general weather button state
+        const defaultButton = document.querySelector('[data-table="generalWeatherTable"]');
+        if (defaultButton) {
+            defaultButton.classList.add('btn-filled');
+            defaultButton.classList.remove('btn-outline-light');
+        }
+
+        // Show only general weather table
+        const generalWrapper = document.getElementById('generalWeatherTableWrapper');
+        if (generalWrapper) {
+            generalWrapper.style.display = "";
+            initializeTable('generalWeatherTable');
+        }
+    } else {
+        // Not first visit - restore saved states
+        // Set all button states first
+        const allButtons = document.querySelectorAll('[data-table]');
+        allButtons.forEach(button => {
+            button.classList.remove('btn-filled');
+            button.classList.add('btn-outline-light');
+        });
+
+        // Initialize and show general weather table
+        const generalWrapper = document.getElementById('generalWeatherTableWrapper');
+        if (generalWrapper) {
+            generalWrapper.style.display = "";
+            initializeTable('generalWeatherTable');
+            const defaultButton = document.querySelector('[data-table="generalWeatherTable"]');
+            if (defaultButton) {
+                defaultButton.classList.add('btn-filled');
+                defaultButton.classList.remove('btn-outline-light');
             }
         }
-    });
+
+        // Check other tables' states and initialize if previously enabled
+        const tables = ['detailedWeatherTable', 'heatUnitsTable', 'seasonalChillUnitsTable'];
+        
+        tables.forEach(tableId => {
+            const state = localStorage.getItem(tableId);
+            const button = document.querySelector(`[data-table="${tableId}"]`);
+            const wrapper = document.getElementById(tableId + "Wrapper");
+
+            if (state === 'enabled' && wrapper) {
+                wrapper.style.display = "";
+                if (button) {
+                    button.classList.add('btn-filled');
+                    button.classList.remove('btn-outline-light');
+                }
+                if (!$.fn.DataTable.isDataTable(`#${tableId}`)) {
+                    initializeTable(tableId);
+                }
+            }
+        });
+    }
 });
 

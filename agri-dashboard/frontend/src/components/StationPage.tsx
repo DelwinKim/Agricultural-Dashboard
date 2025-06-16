@@ -54,7 +54,41 @@ const StationPage: React.FC = () => {
                 // Initialize the default table
                 if (!window.$.fn.DataTable.isDataTable('#generalWeatherTable')) {
                     window.initializeTable('generalWeatherTable');
+                    // Set the button state
+                    const defaultButton = document.querySelector('[data-table="generalWeatherTable"]');
+                    if (defaultButton) {
+                        defaultButton.classList.add('btn-filled');
+                        defaultButton.classList.remove('btn-outline-light');
+                    }
+                    // Set localStorage state
+                    localStorage.setItem('generalWeatherTable', 'enabled');
                 }
+
+                // Check other tables' states and initialize if previously enabled
+                const tables = ['detailedWeatherTable', 'heatUnitsTable', 'seasonalChillUnitsTable'];
+                
+                tables.forEach(tableId => {
+                    const state = localStorage.getItem(tableId);
+                    const button = document.querySelector(`[data-table="${tableId}"]`);
+                    const wrapper = document.getElementById(tableId + "Wrapper");
+
+                    if (state === 'enabled' && wrapper) {
+                        wrapper.style.display = "";
+                        if (button) {
+                            button.classList.add('btn-filled');
+                            button.classList.remove('btn-outline-light');
+                        }
+                        if (!window.$.fn.DataTable.isDataTable(`#${tableId}`)) {
+                            window.initializeTable(tableId);
+                        }
+                    } else if (wrapper) {
+                        wrapper.style.display = "none";
+                        if (button) {
+                            button.classList.remove('btn-filled');
+                            button.classList.add('btn-outline-light');
+                        }
+                    }
+                });
             } catch (err) {
                 console.error('Error initializing DataTables:', err);
                 setError('Failed to initialize tables');
@@ -68,7 +102,7 @@ const StationPage: React.FC = () => {
 
     return (
         <div className="container-fluid">
-            <h1 className="h3 mb-4 text-gray-800">{station.name}'s Weather Summary</h1>
+            <h1 className="h3 mt-4 mb-4 text-gray-800">{station.name}'s Weather Summary</h1>
             
             {/* <div className="btn-group mb-4" role="group">
                 <button 
@@ -108,7 +142,7 @@ const StationPage: React.FC = () => {
             {/* General Weather Card */}
             <div id="generalWeatherTableWrapper" className="card shadow mb-4">
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-bold text-primary">General Summary</h6>
+                    <h6 className="m-0 font-weight-bold">General Summary</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">
@@ -116,14 +150,30 @@ const StationPage: React.FC = () => {
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>ETO</th>
-                                    <th>Max Temp</th>
-                                    <th>Min Temp</th>
-                                    <th>Min RH</th>
-                                    <th>Solar Rad</th>
-                                    <th>Rainfall</th>
-                                    <th>Wind 4AM</th>
-                                    <th>Wind 4PM</th>
+                                    <th>
+                                        ETo<br />(in.)
+                                    </th>
+                                    <th>
+                                        Max Temp<br />(°F)
+                                    </th>
+                                    <th>
+                                        Min Temp<br />(°F)
+                                    </th>
+                                    <th>
+                                        Min RH<br />(%)
+                                    </th>
+                                    <th>
+                                        Solar Rad.<br />(MJ/m2)
+                                    </th>
+                                    <th>
+                                        Rainfall<br />(in.)
+                                    </th>
+                                    <th>
+                                        Wind 4am<br />(mph)
+                                    </th>
+                                    <th>
+                                        Wind 4pm<br />(mph)
+                                    </th>
                                 </tr>
                             </thead>
                             <tfoot>
@@ -147,20 +197,32 @@ const StationPage: React.FC = () => {
             {/* Detailed Weather Card */}
             <div id="detailedWeatherTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-bold text-primary">Detailed Summary</h6>
+                    <h6 className="m-0 font-weight-bold">Detailed Summary</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">
                         <table id="detailedWeatherTable" className="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Average Temp</th>
-                                    <th>Dew Point</th>
-                                    <th>Max Dewpoint</th>
-                                    <th>Min Dewpoint</th>
-                                    <th>Wind Run</th>
-                                    <th>Soil Temp</th>
+                                <th>Date</th>
+                                <th>
+                                    Avg Temp<br />(°F)
+                                </th>
+                                <th>
+                                    Dew Point<br />(°F)
+                                </th>
+                                <th>
+                                    Max Dewpoint<br />(°F)
+                                </th>
+                                <th>
+                                    Min Dewpoint<br />(°F)
+                                </th>
+                                <th>
+                                    Wind Run<br />(miles)
+                                </th>
+                                <th>
+                                    Soil Temp<br />(°F)
+                                </th>
                                 </tr>
                             </thead>
                             <tfoot>
@@ -182,7 +244,7 @@ const StationPage: React.FC = () => {
             {/* Heat Units Card */}
             <div id="heatUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-bold text-primary">Heat Units</h6>
+                    <h6 className="m-0 font-weight-bold">Heat Units</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">
@@ -193,9 +255,9 @@ const StationPage: React.FC = () => {
                                     <th>Corn Heat Units</th>
                                     <th>Cotton Heat Units</th>
                                     <th>Sorghum Heat Units</th>
-                                    <th>Heat Units 50°</th>
-                                    <th>Heat Units 55°</th>
-                                    <th>Heat Units 60°</th>
+                                    <th>Heat Units 50&deg;F</th>
+                                    <th>Heat Units 55&deg;F</th>
+                                    <th>Heat Units 60&deg;F</th>
                                 </tr>
                             </thead>
                             <tfoot>
@@ -217,21 +279,27 @@ const StationPage: React.FC = () => {
             {/* Seasonal Chill Units Card */}
             <div id="seasonalChillUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-bold text-primary">Seasonal Chill Units</h6>
+                    <h6 className="m-0 font-weight-bold">Seasonal Chill Units</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">
                         <table id="seasonalChillUnitsTable" className="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Month</th>
-                                    <th>Method 1</th>
-                                    <th>Method 2</th>
+                                  <th>Month</th>
+                                  <th>
+                                    Method 1<br />
+                                    Number of hours ≥ 32°F and ≤ 45°F
+                                  </th>
+                                  <th>
+                                    Method 2<br />
+                                    Number of hours ≤ 45°F
+                                  </th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th></th>
+                                    <th>Total</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
