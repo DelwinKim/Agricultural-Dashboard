@@ -33,7 +33,7 @@ class GeneralWeatherData(db.Model):
         return {
             'id': self.id,
             'station_id': self.station_id,
-            'date': self.date.strftime('%Y-%m-%d') if self.date is not None else None,
+            'date': self.date.strftime('%b %d, %Y - %a') if self.date is not None else None,
             'eto': float(self.eto) if self.eto is not None else None,
             'max_temp': float(self.max_temp) if self.max_temp is not None else None,
             'min_temp': float(self.min_temp) if self.min_temp is not None else None,
@@ -62,7 +62,7 @@ class DetailedWeatherData(db.Model):
         return {
             'id': self.id,
             'station_id': self.station_id,
-            'date': self.date.strftime('%Y-%m-%d') if self.date is not None else None,
+            'date': self.date.strftime('%b %d, %Y - %a') if self.date is not None else None,
             'average_temp': float(self.average_temp) if self.average_temp is not None else None,
             'dew_point': self.dew_point if self.dew_point is not None else None,
             'max_dewpoint': self.max_dewpoint if self.max_dewpoint is not None else None,
@@ -87,7 +87,7 @@ class HeatUnitsData(db.Model):
         return {
             'id': self.id,
             'station_id': self.station_id,
-            'date': self.date.strftime('%Y-%m-%d') if self.date is not None else None,
+            'date': self.date.strftime('%b %d, %Y - %a') if self.date is not None else None,
             'corn_heat_units': self.corn_heat_units if self.corn_heat_units is not None else None,
             'cotton_heat_units': self.cotton_heat_units if self.cotton_heat_units is not None else None,
             'sorghum_heat_units': self.sorghum_heat_units if self.sorghum_heat_units is not None else None,
@@ -108,7 +108,7 @@ class ChillUnitsData(db.Model):
         return {
             'id': self.id,
             'station_id': self.station_id,
-            'date': self.date.strftime('%Y-%m-%d') if self.date is not None else None,
+            'date': self.date.strftime('%b %d, %Y - %a') if self.date is not None else None,
             'method_1_hours': self.method_1_hours if self.method_1_hours is not None else None,
             'method_2_hours': self.method_2_hours if self.method_2_hours is not None else None
         }

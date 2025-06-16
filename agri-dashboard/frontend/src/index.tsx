@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './styles/sidebar.css';
+import './styles/dataTables.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

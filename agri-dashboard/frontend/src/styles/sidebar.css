@@ -1,0 +1,488 @@
+#layoutSidenav {
+    display: flex;
+}
+
+#layoutSidenav #layoutSidenav_nav {
+    flex-basis: 225px;
+    flex-shrink: 0;
+    transition: transform 0.15s ease-in-out;
+    z-index: 1038;
+    transform: translateX(-225px);
+    position: fixed;
+    top: 75px;
+    left: 0;
+    height: calc(100vh - 75px);
+    width: 225px;
+}
+
+#layoutSidenav #layoutSidenav_nav.sb-sidenav-toggled {
+    transform: translateX(0);
+}
+
+#layoutSidenav #layoutSidenav_content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    flex-grow: 1;
+    min-height: calc(100vh - 75px);
+    margin-left: 0;
+    padding-top: 75px;
+}
+
+#layoutSidenav #layoutSidenav_content.sb-sidenav-toggled {
+    margin-left: 225px;
+}
+
+.sb-sidenav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-wrap: nowrap;
+    background-color: var(--gray-100);
+}
+
+.sb-sidenav .sb-sidenav-menu {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav {
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .sb-sidenav-menu-heading {
+    padding: 1.75rem 1rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link {
+    display: flex;
+    align-items: center;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    position: relative;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link .sb-nav-link-icon {
+    font-size: 0.9rem;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link .sb-sidenav-collapse-arrow {
+    display: inline-block;
+    margin-left: auto;
+    transition: transform 0.15s ease;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link.collapsed .sb-sidenav-collapse-arrow {
+    transform: rotate(-90deg);
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .sb-sidenav-menu-nested {
+    margin-left: 1.5rem;
+    flex-direction: column;
+}
+
+.sb-sidenav .sb-sidenav-footer {
+    padding: 0.75rem;
+    flex-shrink: 0;
+}
+
+.sb-sidenav-light {
+    background-color: #f8f9fa;
+}
+
+.sb-sidenav-light .sb-sidenav-menu .sb-sidenav-menu-heading {
+    color: #6c757d;
+}
+
+.sb-sidenav-light .sb-sidenav-menu .nav-link {
+    color: #212529;
+}
+
+.sb-sidenav-light .sb-sidenav-menu .nav-link .sb-nav-link-icon {
+    color: #6c757d;
+}
+
+.sb-sidenav-light .sb-sidenav-menu .nav-link .sb-sidenav-collapse-arrow {
+    color: #6c757d;
+}
+
+.sb-sidenav-light .sb-sidenav-menu .nav-link:hover {
+    color: #0d6efd;
+}
+
+.sb-sidenav-light .sb-sidenav-menu .nav-link.active {
+    color: #0d6efd;
+}
+
+.sb-sidenav-light .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
+    color: #0d6efd;
+}
+
+.sb-sidenav-light .sb-sidenav-footer {
+    background-color: #f8f9fa;
+}
+
+.sb-topnav {
+    padding-left: 0;
+    height: 75px;
+    z-index: 1039;
+    background-color: rgba(25, 135, 84, 1);
+}
+
+.sb-topnav .navbar-brand {
+    width: 225px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin: 0;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.sb-topnav .navbar-brand img {
+    height: 40px;
+    margin-right: 0.5rem;
+}
+
+.sb-topnav .navbar-dark #sidebarToggle {
+    color: rgba(255, 255, 255, 0.5);
+    padding: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.sb-topnav .navbar-dark #sidebarToggle:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.sb-topnav .nav-link {
+    color: white !important;
+    padding: 0.5rem 1rem;
+}
+
+.sb-topnav .nav-link:hover {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.sb-topnav .btn-outline-light {
+    color: white;
+    border-color: white;
+    padding: 0.375rem 0.75rem;
+}
+
+.sb-topnav .btn-outline-light:hover {
+    color: rgba(25, 135, 84, 1);
+    background-color: white;
+}
+
+.sb-topnav .dropdown-menu {
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+}
+
+.sb-topnav .dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    color: #212529;
+}
+
+.sb-topnav .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #16181b;
+}
+
+.sb-topnav .dropdown-item i {
+    margin-right: 0.5rem;
+}
+
+/* Table Color Scheme */
+:root {
+    --general-weather-bg: #E5F4E7;
+    --general-weather-header: #C1E1C5;
+    --detailed-weather-bg: #E8E8E8;
+    --detailed-weather-header: #D4D4D4;
+    --heat-units-bg: #FFF5EE;
+    --heat-units-header: #F4E1D2;
+    --chill-units-bg: #E3F2FD;
+    --chill-units-header: #BBDEFB;
+    --gray-100: #f8f9fa;
+    --gray-300: #dee2e6;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+}
+
+/* Button Styles */
+.btn-group {
+    border-radius: 4px;
+}
+
+.btn-group .btn {
+    display: inline-block;
+    width: auto;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px !important;
+    font-size: 0.69rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+    margin-right: 0.5rem;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-group .btn:first-child {
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+}
+
+.btn-group .btn:last-child {
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+}
+
+.btn-group .btn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Table Toggle Button Styles */
+.btn-group .generalWeather-btn {
+    color: #adb5bd !important;
+    border-color: #C1E1C5 !important;
+    border-width: 3px !important;
+    background-color: transparent !important;
+}
+
+.btn-group .generalWeather-btn.btn-filled,
+.btn-group .generalWeather-btn:hover {
+    background-color: #C1E1C5 !important;
+    color: black !important;
+    border-color: #C1E1C5 !important;
+    border-width: 3px !important;
+}
+
+.btn-group .generalWeather-btn:active {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2) !important;
+    transform: scale(0.98) !important;
+}
+
+.btn-group .detailedWeather-btn {
+    color: #adb5bd !important;
+    border-color: #D4D4D4 !important;
+    border-width: 3px !important;
+    background-color: transparent !important;
+}
+
+.btn-group .detailedWeather-btn.btn-filled,
+.btn-group .detailedWeather-btn:hover {
+    background-color: #D4D4D4 !important;
+    color: black !important;
+    border-color: #D4D4D4 !important;
+    border-width: 3px !important;
+}
+
+.btn-group .detailedWeather-btn:active {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2) !important;
+    transform: scale(0.98) !important;
+}
+
+.btn-group .heatUnits-btn {
+    color: #adb5bd !important;
+    border-color: #F4E1D2 !important;
+    border-width: 3px !important;
+    background-color: transparent !important;
+}
+
+.btn-group .heatUnits-btn.btn-filled,
+.btn-group .heatUnits-btn:hover {
+    background-color: #F4E1D2 !important;
+    color: black !important;
+    border-color: #F4E1D2 !important;
+    border-width: 3px !important;
+}
+
+.btn-group .heatUnits-btn:active {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2) !important;
+    transform: scale(0.98) !important;
+}
+
+.btn-group .chillUnits-btn {
+    color: #adb5bd !important;
+    border-color: #BBDEFB !important;
+    border-width: 3px !important;
+    background-color: transparent !important;
+}
+
+.btn-group .chillUnits-btn.btn-filled,
+.btn-group .chillUnits-btn:hover {
+    background-color: #BBDEFB !important;
+    color: black !important;
+    border-color: #BBDEFB !important;
+    border-width: 3px !important;
+}
+
+.btn-group .chillUnits-btn:active {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2) !important;
+    transform: scale(0.98) !important;
+}
+
+/* Side Navigation */
+.sb-sidenav .sb-sidenav-menu .nav .sb-sidenav-menu-heading {
+    padding: 1.75rem 1rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    border-bottom: 1px solid var(--gray-300);
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link {
+    display: flex;
+    align-items: center;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    position: relative;
+    color: var(--gray-500);
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link:hover {
+    color: black;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link.active {
+    color: black;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link .sb-nav-link-icon {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    margin-right: 0.5rem;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link.active .sb-nav-link-icon {
+    color: black;
+}
+
+/* Table Styles */
+.dt-container .dataTable {
+    font-size: 0.875rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+}
+
+.dt-container .dataTable th,
+.dt-container .dataTable td {
+    vertical-align: middle !important;
+    padding: 0.5rem !important;
+    text-align: center !important;
+    border: 1px solid #dee2e6;
+}
+
+.dt-container .dataTable th:first-child,
+.dt-container .dataTable td:first-child {
+    text-align: left !important;
+}
+
+.dt-container .dataTable tfoot td {
+    font-weight: bold;
+}
+
+/* Table Wrapper Styles */
+#generalWeatherTableWrapper .card-body {
+    background-color: var(--general-weather-bg);
+}
+
+#generalWeatherTableWrapper .card-header {
+    background-color: var(--general-weather-header);
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#detailedWeatherTableWrapper .card-body {
+    background-color: var(--detailed-weather-bg);
+}
+
+#detailedWeatherTableWrapper .card-header {
+    background-color: var(--detailed-weather-header);
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#heatUnitsTableWrapper .card-body {
+    background-color: var(--heat-units-bg);
+}
+
+#heatUnitsTableWrapper .card-header {
+    background-color: var(--heat-units-header);
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#seasonalChillUnitsTableWrapper .card-body {
+    background-color: var(--chill-units-bg);
+}
+
+#seasonalChillUnitsTableWrapper .card-header {
+    background-color: var(--chill-units-header);
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* DataTable Controls */
+.dt-length select {
+    display: inline-block;
+    padding-left: 1.125rem;
+    padding-right: 2.125rem;
+    margin-right: 0.25rem;
+}
+
+.dt-length, .dt-info {
+    float: left;
+}
+
+.dt-paging {
+    float: right;
+}
+
+.dt-container {
+    overflow-x: auto;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -0.125rem;
+    display: none;
+}
+
+.dropdown-submenu:hover > .dropdown-menu,
+.dropdown-submenu:focus > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+} 

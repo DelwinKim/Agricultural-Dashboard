@@ -68,12 +68,12 @@ const StationPage: React.FC = () => {
 
     return (
         <div className="container-fluid">
-            <h1 className="h3 mb-4 text-gray-800">{station.name} Weather Data</h1>
+            <h1 className="h3 mb-4 text-gray-800">{station.name}'s Weather Summary</h1>
             
-            <div className="btn-group mb-4" role="group">
+            {/* <div className="btn-group mb-4" role="group">
                 <button 
                     type="button"
-                    className="btn btn-outline-light btn-sm btn-filled"
+                    className="btn generalWeather-btn"
                     data-table="generalWeatherTable"
                     onClick={() => window.toggleTable('generalWeatherTable')}
                 >
@@ -81,7 +81,7 @@ const StationPage: React.FC = () => {
                 </button>
                 <button 
                     type="button"
-                    className="btn btn-outline-light btn-sm"
+                    className="btn detailedWeather-btn"
                     data-table="detailedWeatherTable"
                     onClick={() => window.toggleTable('detailedWeatherTable')}
                 >
@@ -89,7 +89,7 @@ const StationPage: React.FC = () => {
                 </button>
                 <button 
                     type="button"
-                    className="btn btn-outline-light btn-sm"
+                    className="btn heatUnits-btn"
                     data-table="heatUnitsTable"
                     onClick={() => window.toggleTable('heatUnitsTable')}
                 >
@@ -97,18 +97,18 @@ const StationPage: React.FC = () => {
                 </button>
                 <button 
                     type="button"
-                    className="btn btn-outline-light btn-sm"
+                    className="btn chillUnits-btn"
                     data-table="seasonalChillUnitsTable"
                     onClick={() => window.toggleTable('seasonalChillUnitsTable')}
                 >
                     Seasonal Chill Units
                 </button>
-            </div>
+            </div> */}
 
             {/* General Weather Card */}
             <div id="generalWeatherTableWrapper" className="card shadow mb-4">
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-bold text-primary">General Weather</h6>
+                    <h6 className="m-0 font-weight-bold text-primary">General Summary</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">
@@ -147,7 +147,7 @@ const StationPage: React.FC = () => {
             {/* Detailed Weather Card */}
             <div id="detailedWeatherTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-bold text-primary">Detailed Weather</h6>
+                    <h6 className="m-0 font-weight-bold text-primary">Detailed Summary</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">

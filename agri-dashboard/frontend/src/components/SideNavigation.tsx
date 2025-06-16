@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Nav, Accordion } from 'react-bootstrap';
+import { Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 
-const SideNavigation: React.FC = () => {
+interface SideNavigationProps {
+    onToggleTable: (tableName: string) => void;
+    activeTables: {
+        generalWeather: boolean;
+        detailedWeather: boolean;
+        heatUnits: boolean;
+        chillUnits: boolean;
+    };
+}
+
+const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTables }) => {
     const [isCollapsed, setIsCollapsed] = useState(() => {
         return localStorage.getItem('sb|sidebar-toggle') === 'true';
     });
@@ -13,12 +23,10 @@ const SideNavigation: React.FC = () => {
     const location = useLocation();
 
     useEffect(() => {
-        // Save sidebar state
         localStorage.setItem('sb|sidebar-toggle', isCollapsed.toString());
     }, [isCollapsed]);
 
     useEffect(() => {
-        // Save tables accordion state
         localStorage.setItem('sb|tables-accordion-open', tablesExpanded.toString());
     }, [tablesExpanded]);
 
@@ -30,49 +38,84 @@ const SideNavigation: React.FC = () => {
         setTablesExpanded(!tablesExpanded);
     };
 
+    const handleToggleTable = (tableId: string) => {
+        if (window.toggleTable) {
+            window.toggleTable(tableId);
+        }
+    };
+
     return (
-        <div className={`sb-sidenav ${isCollapsed ? 'sb-sidenav-toggled' : ''}`}>
+        <nav className="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
             <div className="sb-sidenav-menu">
                 <div className="nav">
-                    <div className="sb-sidenav-menu-heading">Core</div>
-                    <Link 
-                        className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-                        to="/"
+                    <div className="sb-sidenav-menu-heading">Data View Options</div>
+                    <a 
+                        className={`nav-link ${tablesExpanded ? '' : 'collapsed'}`} 
+                        href="#" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#collapseTables" 
+                        aria-expanded={tablesExpanded} 
+                        aria-controls="collapseTables"
+                        onClick={toggleTables}
                     >
                         <div className="sb-nav-link-icon">
-                            <i className="fas fa-tachometer-alt"></i>
+                            <i className="fas fa-table"></i>
                         </div>
-                        Dashboard
-                    </Link>
-
-                    <div className="sb-sidenav-menu-heading">Interface</div>
-                    <Accordion activeKey={tablesExpanded ? 'tables' : undefined}>
-                        <Accordion.Item eventKey="tables">
-                            <Accordion.Header onClick={toggleTables}>
-                                <div className="sb-nav-link-icon">
-                                    <i className="fas fa-table"></i>
-                                </div>
-                                Tables
-                            </Accordion.Header>
-                            <Accordion.Body>
-                                <Nav className="sb-sidenav-menu-nested nav">
-                                    <Link 
-                                        className={`nav-link ${location.pathname.startsWith('/station/') ? 'active' : ''}`}
-                                        to="/station/Corpus Christi Agrilife"
-                                    >
-                                        Weather Data
-                                    </Link>
-                                </Nav>
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    </Accordion>
+                        Tables
+                        <div className="sb-sidenav-collapse-arrow">
+                            <i className="fas fa-angle-down"></i>
+                        </div>
+                    </a>
+                    <div 
+                        className={`collapse ${tablesExpanded ? 'show' : ''}`} 
+                        id="collapseTables" 
+                        aria-labelledby="headingTables" 
+                        data-bs-parent="#sidenavAccordion"
+                    >
+                        <nav className="sb-sidenav-menu-nested nav flex-column">
+                            <div className="btn-group d-flex flex-column">
+                                <button 
+                                    type="button"
+                                    className="btn btn-sm generalWeather-btn mb-2"
+                                    data-table="generalWeatherTable"
+                                    onClick={() => window.toggleTable('generalWeatherTable')}
+                                >
+                                    General Summary
+                                </button>
+                                <button 
+                                    type="button"
+                                    className="btn btn-sm detailedWeather-btn mb-2"
+                                    data-table="detailedWeatherTable"
+                                    onClick={() => window.toggleTable('detailedWeatherTable')}
+                                >
+                                    Detailed Summary
+                                </button>
+                                <button 
+                                    type="button"
+                                    className="btn btn-sm heatUnits-btn mb-2"
+                                    data-table="heatUnitsTable"
+                                    onClick={() => window.toggleTable('heatUnitsTable')}
+                                >
+                                    Heat Units
+                                </button>
+                                <button 
+                                    type="button"
+                                    className="btn btn-sm chillUnits-btn mb-2"
+                                    data-table="seasonalChillUnitsTable"
+                                    onClick={() => window.toggleTable('seasonalChillUnitsTable')}
+                                >
+                                    Chill Units
+                                </button>
+                            </div>
+                        </nav>
+                    </div>
                 </div>
             </div>
             <div className="sb-sidenav-footer">
                 <div className="small">Logged in as:</div>
                 Start Bootstrap
             </div>
-        </div>
+        </nav>
     );
 };
 
