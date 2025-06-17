@@ -102,76 +102,86 @@ const DownloadDataPage: React.FC = () => {
     };
 
     return (
-        <Container>
-            <h2 className="mb-4">Download Weather Data</h2>
-            <Form onSubmit={handleSubmit}>
-                <Row>
-                    <Col md={6}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Weather Station</Form.Label>
-                            <Select<StationOption>
-                                options={stations.map(station => ({
-                                    value: station.id,
-                                    label: station.name
-                                }))}
-                                value={selectedStation ? {
-                                    value: selectedStation.id,
-                                    label: selectedStation.name
-                                } : null}
-                                onChange={handleStationChange}
-                                placeholder="Select a station"
-                            />
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={6}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Start Date</Form.Label>
-                            <Form.Control
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                            />
-                        </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>End Date</Form.Label>
-                            <Form.Control
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                            />
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={12}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Fields to Include</Form.Label>
-                            <Select<Field, true>
-                                isMulti
-                                options={fieldOptions}
-                                value={selectedFields}
-                                onChange={(newValue) => setSelectedFields(newValue as Field[])}
-                                placeholder="Select fields to include"
-                                closeMenuOnSelect={false}
-                            />
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={12} className="text-center">
-                        <Button type="submit" variant="primary">
-                            <i className="fas fa-download me-2"></i>
-                            Download Data
-                        </Button>
-                    </Col>
-                </Row>
-            </Form>
-        </Container>
+        <div style={{ minHeight: '80vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e9f7ef 100%)', padding: '40px 0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Container>
+                <div className="mx-auto" style={{ maxWidth: 650 }}>
+                    <div className="card shadow-lg border-0 p-4" style={{ borderRadius: 18 }}>
+                        <div className="card-body">
+                            <h2 className="mb-4 text-center" style={{ fontWeight: 700, color: '#198754', letterSpacing: 1 }}>Download Weather Data</h2>
+                            <Form onSubmit={handleSubmit}>
+                                <Row>
+                                    <Col md={12} className="mb-3">
+                                        <Form.Group>
+                                            <Form.Label className="fw-bold">Weather Station</Form.Label>
+                                            <Select<StationOption>
+                                                options={stations.map(station => ({
+                                                    value: station.id,
+                                                    label: station.name
+                                                }))}
+                                                value={selectedStation ? {
+                                                    value: selectedStation.id,
+                                                    label: selectedStation.name
+                                                } : null}
+                                                onChange={handleStationChange}
+                                                placeholder="Select a station"
+                                                styles={{ menu: base => ({ ...base, zIndex: 9999 }) }}
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={6} className="mb-3">
+                                        <Form.Group>
+                                            <Form.Label className="fw-bold">Start Date</Form.Label>
+                                            <Form.Control
+                                                type="date"
+                                                value={startDate}
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6} className="mb-3">
+                                        <Form.Group>
+                                            <Form.Label className="fw-bold">End Date</Form.Label>
+                                            <Form.Control
+                                                type="date"
+                                                value={endDate}
+                                                onChange={(e) => setEndDate(e.target.value)}
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={12} className="mb-3">
+                                        <Form.Group>
+                                            <Form.Label className="fw-bold">Fields to Include</Form.Label>
+                                            <Select<Field, true>
+                                                isMulti
+                                                options={fieldOptions}
+                                                value={selectedFields}
+                                                onChange={(newValue) => setSelectedFields(newValue as Field[])}
+                                                placeholder="Select fields to include"
+                                                closeMenuOnSelect={false}
+                                                styles={{ menu: base => ({ ...base, zIndex: 9999 }) }}
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={12} className="text-center mt-3">
+                                        <Button type="submit" variant="success" size="lg" style={{ borderRadius: 8, fontWeight: 600, padding: '10px 32px', letterSpacing: 1 }}>
+                                            <i className="fas fa-download me-2"></i>
+                                            Download Data
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </div>
+                    </div>
+                </div>
+            </Container>
+        </div>
     );
 };
 
-export default DownloadDataPage; 
+export default DownloadDataPage;

@@ -33,9 +33,8 @@ const Navigation: React.FC<NavigationProps> = ({ onToggleSidebar }) => {
             src="/images/image.png" 
             alt="AgriLife Logo" 
             style={{ 
-              height: '100%', 
+              maxHeight: '75px',
               width: 'auto',
-              maxHeight: '60px',
               objectFit: 'contain'
             }} 
           />
@@ -56,4 +55,4 @@ const Navigation: React.FC<NavigationProps> = ({ onToggleSidebar }) => {
   );
 };
 
-export default Navigation; 
+export default Navigation;

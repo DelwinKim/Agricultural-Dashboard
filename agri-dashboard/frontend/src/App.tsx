@@ -51,15 +51,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         />
                     </div>
                 )}
-                <div id="layoutSidenav_content" className={isStationPage && isSidebarCollapsed ? 'sb-sidenav-toggled' : ''}>
-                    <main>
-                        <Container fluid className="px-4">
+                <div id="layoutSidenav_content" className={isStationPage && isSidebarCollapsed ? 'sb-sidenav-toggled' : ''} style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                    <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <Container fluid className="px-4" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                             {children}
                         </Container>
                     </main>
                     <footer className="app-footer bg-light text-center py-3 mt-4" style={{ borderTop: '1px solid #e3e6f0' }}>
                         <span style={{ color: '#6c757d', fontSize: '0.95rem' }}>
-                            &copy; {new Date().getFullYear()} Crop Sense &mdash; Texas A&M AgriLife
+                            &copy; {new Date().getFullYear()} Crop Sense 
                         </span>
                     </footer>
                 </div>

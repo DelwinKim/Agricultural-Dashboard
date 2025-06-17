@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -9,7 +9,9 @@ import {
     Wind, 
     Sun, 
     Table,
-    BarChart
+    BarChart,
+    ChevronDown,
+    ChevronRight
 } from 'react-bootstrap-icons';
 import { useSidebar } from '../contexts/SidebarContext';
 
@@ -26,15 +28,30 @@ interface SideNavigationProps {
 const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTables }) => {
     const location = useLocation();
     const isStationPage = location.pathname.startsWith('/station/');
-    const [tablesExpanded, setTablesExpanded] = useState(() => {
-        return localStorage.getItem('sb|tables-accordion-open') !== 'false';
-    });
+    const { showCharts, setShowCharts, showTables, setShowTables, activeCharts, setActiveCharts } = useSidebar();
+    // On mount, use localStorage if present, otherwise use context default
+    const getInitialTablesExpanded = () => {
+        const stored = localStorage.getItem('sb|tables-accordion-open');
+        if (stored !== null) return stored === 'true';
+        return showTables;
+    };
+    const [tablesExpanded, setTablesExpanded] = useState(getInitialTablesExpanded);
     const [chartsExpanded, setChartsExpanded] = useState(false);
-    const { showCharts, setShowCharts, activeCharts, setActiveCharts } = useSidebar();
+
+    // Keep tablesExpanded and showTables in sync
+    useEffect(() => {
+        setTablesExpanded(showTables);
+        localStorage.setItem('sb|tables-accordion-open', showTables.toString());
+    }, [showTables]);
+
+    // Keep chartsExpanded and showCharts in sync
+    useEffect(() => {
+        setChartsExpanded(showCharts);
+    }, [showCharts]);
 
     const toggleTables = () => {
-        setTablesExpanded(!tablesExpanded);
-        localStorage.setItem('sb|tables-accordion-open', (!tablesExpanded).toString());
+        setShowTables(!showTables);
+        // tablesExpanded will be updated by the useEffect above
     };
 
     const toggleCharts = () => {
@@ -55,22 +72,22 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
         <nav className="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
             <div className="sb-sidenav-menu">
                 <div className="nav">
-                    <div className="sb-sidenav-menu-heading">Data View Options</div>
+                    <div className="sb-sidenav-menu-heading">Visualization Options</div>
                     <a 
-                        className={`nav-link ${tablesExpanded ? '' : 'collapsed'}`} 
-                        href="#" 
+                        className={`nav-link sb-dropdown-toggle${tablesExpanded ? ' active-dropdown' : ''} ${tablesExpanded ? '' : 'collapsed'}`}
                         data-bs-toggle="collapse" 
                         data-bs-target="#collapseTables" 
                         aria-expanded={tablesExpanded} 
                         aria-controls="collapseTables"
                         onClick={toggleTables}
+                        style={{ fontWeight: tablesExpanded ? 'bold' : 'normal', background: tablesExpanded ? 'rgba(25,135,84,0.08)' : 'transparent' }}
                     >
                         <div className="sb-nav-link-icon">
                             <Table />
                         </div>
                         Tables
-                        <div className="sb-sidenav-collapse-arrow">
-                            <i className="fas fa-angle-down"></i>
+                        <div className="sb-sidenav-collapse-arrow" style={{ marginLeft: 8, transition: 'transform 0.2s' }}>
+                            {tablesExpanded ? <ChevronDown /> : <ChevronRight />}
                         </div>
                     </a>
                     <div 
@@ -119,20 +136,20 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
 
                     {/* Charts Section */}
                     <a 
-                        className={`nav-link ${chartsExpanded ? '' : 'collapsed'}`} 
-                        href="#" 
+                        className={`nav-link sb-dropdown-toggle${chartsExpanded ? ' active-dropdown' : ''} ${chartsExpanded ? '' : 'collapsed'}`}
                         data-bs-toggle="collapse" 
                         data-bs-target="#collapseCharts" 
                         aria-expanded={chartsExpanded} 
                         aria-controls="collapseCharts"
                         onClick={toggleCharts}
+                        style={{ fontWeight: chartsExpanded ? 'bold' : 'normal', background: chartsExpanded ? 'rgba(25,135,84,0.08)' : 'transparent' }}
                     >
                         <div className="sb-nav-link-icon">
                             <BarChart />
                         </div>
                         Charts
-                        <div className="sb-sidenav-collapse-arrow">
-                            <i className="fas fa-angle-down"></i>
+                        <div className="sb-sidenav-collapse-arrow" style={{ marginLeft: 8, transition: 'transform 0.2s' }}>
+                            {chartsExpanded ? <ChevronDown /> : <ChevronRight />}
                         </div>
                     </a>
                     <div 

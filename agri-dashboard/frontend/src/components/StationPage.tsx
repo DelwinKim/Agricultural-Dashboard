@@ -520,7 +520,210 @@ const StationPage: React.FC = () => {
 
                     <div className="charts-section p-3">
                         {/* Render all selected charts */}
-                        {chartData && activeCharts.map((chartType) => {
+                        {chartData && Array.isArray(activeCharts) && activeCharts.length > 0 ? (
+                            activeCharts.map((chartType) => {
+                                const chart = prepareChartData(chartData, chartType);
+                                let title = '';
+                                switch (chartType) {
+                                    case 'temperature': title = 'Max / Min / Avg Temperature'; break;
+                                    case 'rainfall': title = 'Rainfall & Max Temp (Dual Axis)'; break;
+                                    case 'eto': title = 'Daily ETo (Evapotranspiration)'; break;
+                                    case 'solar': title = 'Solar Radiation'; break;
+                                    case 'humidity': title = 'Min RH & Dew Point'; break;
+                                    case 'humidity-dewpoint': title = 'Min RH & Dew Point Over Time'; break;
+                                    case 'dewpoint-scatter': title = 'Ambient Temp vs Dew Point (Scatter)'; break;
+                                    case 'wind': title = 'Wind Patterns'; break;
+                                    case 'cumulative-heat-units': title = 'Cumulative Heat Units (Corn, Cotton, Sorghum)'; break;
+                                    default: title = 'Weather Data Chart';
+                                }
+                                return (
+                                    <div className="mb-2 card" key={chartType}>
+                                        <div className="card-header">
+                                            <h6 className="m-0 font-weight-bold" style={{ fontSize: '1rem' }}>{title}</h6>
+                                        </div>
+                                        <div className="card-body" style={{ height: '500px', padding: 0 }}>
+                                            <div style={{ width: '100%', height: '100%' }}>
+                                                <Line
+                                                    data={chartType === 'rainfall' ? (chart as any) : chart}
+                                                    options={{
+                                                        responsive: true,
+                                                        maintainAspectRatio: false,
+                                                        plugins: {
+                                                            legend: { position: 'top' },
+                                                            title: { display: false }
+                                                        },
+                                                        ...(chartType === 'temperature' && {
+                                                            scales: { y: { title: { display: true, text: 'Temperature (°F)' }, beginAtZero: false } }
+                                                        }),
+                                                        ...(chartType === 'rainfall' && {
+                                                            scales: { y: { type: 'linear', position: 'left' }, y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false } } }
+                                                        }),
+                                                        ...(chartType === 'humidity-dewpoint' && {
+                                                            scales: { y: { title: { display: true, text: 'Value' }, beginAtZero: false } }
+                                                        }),
+                                                        ...(chartType === 'dewpoint-scatter' && {
+                                                            elements: { point: { pointStyle: 'circle' } },
+                                                            scales: { x: { title: { display: true, text: 'Dew Point (°F)' } }, y: { title: { display: true, text: 'Ambient Temp (°F)' } } }
+                                                        }),
+                                                        ...(chartType === 'cumulative-heat-units' && {
+                                                            scales: { y: { title: { display: true, text: 'Cumulative Units' }, beginAtZero: true } }
+                                                        })
+                                                    }}
+                                                    height={400}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <div className="text-center text-muted" style={{ padding: '2rem' }}>
+                                {Array.isArray(activeCharts) && activeCharts.length === 0
+                                    ? 'No charts selected.'
+                                    : 'No chart data available.'}
+                            </div>
+                        )}
+                    </div>
+                </Split>
+            ) : showTables ? (
+                <div className="tables-section">
+                    <div id="generalWeatherTableWrapper" className="card shadow mb-4">
+                        <div className="card-header py-3">
+                            <h6 className="m-0 font-weight-bold">General Summary</h6>
+                        </div>
+                        <div className="card-body">
+                            <div className="table-responsive">
+                                <table id="generalWeatherTable" className="table table-bordered" width="100%" cellSpacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>ETo (in.)</th>
+                                            <th>Max Temp (°F)</th>
+                                            <th>Min Temp (°F)</th>
+                                            <th>Min RH (%)</th>
+                                            <th>Solar Rad. (MJ/m2)</th>
+                                            <th>Rainfall (in.)</th>
+                                            <th>Wind 4am (mph)</th>
+                                            <th>Wind 4pm (mph)</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="detailedWeatherTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
+                        <div className="card-header py-3">
+                            <h6 className="m-0 font-weight-bold">Detailed Summary</h6>
+                        </div>
+                        <div className="card-body">
+                            <div className="table-responsive">
+                                <table id="detailedWeatherTable" className="table table-bordered" width="100%" cellSpacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Avg Temp (°F)</th>
+                                            <th>Dew Point (°F)</th>
+                                            <th>Max Dewpoint (°F)</th>
+                                            <th>Min Dewpoint (°F)</th>
+                                            <th>Wind Run (miles)</th>
+                                            <th>Soil Temp (°F)</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="heatUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
+                        <div className="card-header py-3">
+                            <h6 className="m-0 font-weight-bold">Heat Units</h6>
+                        </div>
+                        <div className="card-body">
+                            <div className="table-responsive">
+                                <table id="heatUnitsTable" className="table table-bordered" width="100%" cellSpacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Corn Heat Units</th>
+                                            <th>Cotton Heat Units</th>
+                                            <th>Sorghum Heat Units</th>
+                                            <th>Heat Units 50°F</th>
+                                            <th>Heat Units 55°F</th>
+                                            <th>Heat Units 60°F</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="seasonalChillUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
+                <div className="card-header py-3">
+                    <h6 className="m-0 font-weight-bold">Seasonal Chill Units</h6>
+                </div>
+                <div className="card-body">
+                    <div className="table-responsive">
+                        <table id="seasonalChillUnitsTable" className="table table-bordered" width="100%" cellSpacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Method 1<br />Number of hours ≥ 32°F and ≤ 45°F</th>
+                                    <th>Method 2<br />Number of hours ≤ 45°F</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+                </div>
+            ) : showCharts ? (
+                <div className="charts-section p-3">
+                    {/* Render all selected charts */}
+                    {chartData && Array.isArray(activeCharts) && activeCharts.length > 0 ? (
+                        activeCharts.map((chartType) => {
                             const chart = prepareChartData(chartData, chartType);
                             let title = '';
                             switch (chartType) {
@@ -574,177 +777,16 @@ const StationPage: React.FC = () => {
                                     </div>
                                 </div>
                             );
-                        })}
-                    </div>
-                </Split>
-            ) : (
-                <div>
-                    {showTables && (
-                        <div className="col-12">
-                            <div id="generalWeatherTableWrapper" className="card shadow mb-4">
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold">General Summary</h6>
-                                </div>
-                                <div className="card-body">
-                                    <div className="table-responsive">
-                                        <table id="generalWeatherTable" className="table table-bordered" width="100%" cellSpacing="0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Date</th>
-                                                    <th>ETo (in.)</th>
-                                                    <th>Max Temp (°F)</th>
-                                                    <th>Min Temp (°F)</th>
-                                                    <th>Min RH (%)</th>
-                                                    <th>Solar Rad. (MJ/m2)</th>
-                                                    <th>Rainfall (in.)</th>
-                                                    <th>Wind 4am (mph)</th>
-                                                    <th>Wind 4pm (mph)</th>
-                                                </tr>
-                                            </thead>
-                                            <tfoot>
-                                                <tr>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="detailedWeatherTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold">Detailed Summary</h6>
-                                </div>
-                                <div className="card-body">
-                                    <div className="table-responsive">
-                                        <table id="detailedWeatherTable" className="table table-bordered" width="100%" cellSpacing="0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Date</th>
-                                                    <th>Avg Temp (°F)</th>
-                                                    <th>Dew Point (°F)</th>
-                                                    <th>Max Dewpoint (°F)</th>
-                                                    <th>Min Dewpoint (°F)</th>
-                                                    <th>Wind Run (miles)</th>
-                                                    <th>Soil Temp (°F)</th>
-                                                </tr>
-                                            </thead>
-                                            <tfoot>
-                                                <tr>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="heatUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold">Heat Units</h6>
-                                </div>
-                                <div className="card-body">
-                                    <div className="table-responsive">
-                                        <table id="heatUnitsTable" className="table table-bordered" width="100%" cellSpacing="0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Date</th>
-                                                    <th>Corn Heat Units</th>
-                                                    <th>Cotton Heat Units</th>
-                                                    <th>Sorghum Heat Units</th>
-                                                    <th>Heat Units 50°F</th>
-                                                    <th>Heat Units 55°F</th>
-                                                    <th>Heat Units 60°F</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="seasonalChillUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
-                <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-bold">Seasonal Chill Units</h6>
-                </div>
-                <div className="card-body">
-                    <div className="table-responsive">
-                        <table id="seasonalChillUnitsTable" className="table table-bordered" width="100%" cellSpacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Month</th>
-                                    <th>Method 1<br />Number of hours ≥ 32°F and ≤ 45°F</th>
-                                    <th>Method 2<br />Number of hours ≤ 45°F</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>Total</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-                        </div>
-                    )}
-                    {showCharts && (
-                        <div className="col-12">
-                            <div className="card shadow mb-4">
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold">Weather Data Charts</h6>
-                                </div>
-                                <div className="card-body">
-                                    {chartData && (
-                                        <Line 
-                                            data={chartData}
-                                            options={{
-                                                responsive: true,
-                                                maintainAspectRatio: false,
-                                                plugins: {
-                                                    legend: {
-                                                        position: 'top' as const,
-                                                    },
-                                                    title: {
-                                                        display: true,
-                                                        text: 'Weather Data Trends'
-                                                    }
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                </div>
-                            </div>
+                        })
+                    ) : (
+                        <div className="text-center text-muted" style={{ padding: '2rem' }}>
+                            {Array.isArray(activeCharts) && activeCharts.length === 0
+                                ? 'No charts selected.'
+                                : 'No chart data available.'}
                         </div>
                     )}
                 </div>
-            )}
+            ) : null}
         </div>
     );
 };

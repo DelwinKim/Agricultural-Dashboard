@@ -93,7 +93,9 @@
 }
 
 .sb-sidenav-light {
-    background-color: #f8f9fa;
+    background-color: #f3f8f4; /* subtle green-tinted background */
+    /* Optionally, add a slight border or shadow for separation */
+    border-right: 1px solid #e3e6f0;
 }
 
 .sb-sidenav-light .sb-sidenav-menu .sb-sidenav-menu-heading {
@@ -147,7 +149,8 @@
 }
 
 .sb-topnav .navbar-brand img {
-    height: 40px;
+    height: 100%;
+    max-height: 50px;
     width: auto;
     object-fit: contain;
 }
@@ -406,4 +409,23 @@
 }
 
 .charts-section .card-body {
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link.sb-dropdown-toggle.active-dropdown {
+    background-color: rgba(25,135,84,0.08);
+    font-weight: bold;
+    color: #198754;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link.sb-dropdown-toggle {
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link.sb-dropdown-toggle .sb-sidenav-collapse-arrow {
+    transition: transform 0.2s;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link.sb-dropdown-toggle.active-dropdown .sb-sidenav-collapse-arrow {
+    color: #198754;
 }

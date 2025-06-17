@@ -22,13 +22,13 @@
 }
 
 /* Table styles */
-.table-wrapper {
+/* .table-wrapper {
     margin-top: 20px;
     background: white;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+} */
 
 /* Button styles */
 .btn-filled {
@@ -39,4 +39,10 @@
 .btn-filled:hover {
     background-color: #0056b3;
     color: white;
-} 
+}
+
+/* Background gradient */
+body, #root, #layoutSidenav_content {
+    background: linear-gradient(135deg, #f8fafc 0%, #e9f7ef 100%) !important;
+    min-height: 100vh;
+}
