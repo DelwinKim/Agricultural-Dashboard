@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+// FIX ME: use browser router
 import Navigation from './components/Navigation';
 import SideNavigation from './components/SideNavigation';
 import HomePage from './components/HomePage';

@@ -30,7 +30,7 @@ const Navigation: React.FC<NavigationProps> = ({ onToggleSidebar }) => {
         )}
         <Navbar.Brand as={Link} to="/">
           <img 
-            src="/images/image.png" 
+            src={process.env.PUBLIC_URL + "/images/image.png"} 
             alt="AgriLife Logo" 
             style={{ 
               maxHeight: '75px',
