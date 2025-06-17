@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Nav } from 'react-bootstrap';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { 
     House, 
     CloudSun, 
@@ -27,45 +27,29 @@ interface SideNavigationProps {
 
 const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTables }) => {
     const location = useLocation();
+    const { stationName } = useParams<{ stationName: string }>();
     const isStationPage = location.pathname.startsWith('/station/');
-    const { showCharts, setShowCharts, showTables, setShowTables, activeCharts, setActiveCharts } = useSidebar();
-    // On mount, use localStorage if present, otherwise use context default
-    const getInitialTablesExpanded = () => {
-        const stored = localStorage.getItem('sb|tables-accordion-open');
-        if (stored !== null) return stored === 'true';
-        return showTables;
-    };
-    const [tablesExpanded, setTablesExpanded] = useState(getInitialTablesExpanded);
-    const [chartsExpanded, setChartsExpanded] = useState(false);
+    const { getSidebarState, setSidebarState } = useSidebar();
+    const sidebarState = getSidebarState(stationName || '');
+    const { showCharts, showTables, activeCharts } = sidebarState;
 
-    // Keep tablesExpanded and showTables in sync
-    useEffect(() => {
-        setTablesExpanded(showTables);
-        localStorage.setItem('sb|tables-accordion-open', showTables.toString());
-    }, [showTables]);
-
-    // Keep chartsExpanded and showCharts in sync
-    useEffect(() => {
-        setChartsExpanded(showCharts);
-    }, [showCharts]);
+    // Dropdown expanded state is now per-station
+    const tablesExpanded = showTables;
+    const chartsExpanded = showCharts;
 
     const toggleTables = () => {
-        setShowTables(!showTables);
-        // tablesExpanded will be updated by the useEffect above
+        setSidebarState(stationName || '', { showTables: !showTables });
     };
 
     const toggleCharts = () => {
-        setChartsExpanded(!chartsExpanded);
-        setShowCharts(!showCharts);
+        setSidebarState(stationName || '', { showCharts: !showCharts });
     };
 
     const handleChartToggle = (chartType: string) => {
-        setActiveCharts(((prev: string[]) =>
-            prev.includes(chartType)
-                ? prev.filter((c: string) => c !== chartType)
-                : [...prev, chartType]
-        ) as unknown as string[]);
-        setShowCharts(true);
+        const newCharts = activeCharts.includes(chartType)
+            ? activeCharts.filter((c: string) => c !== chartType)
+            : [...activeCharts, chartType];
+        setSidebarState(stationName || '', { activeCharts: newCharts, showCharts: true });
     };
 
     return (

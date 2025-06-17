@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import Split from 'react-split';
 import {
@@ -8,7 +7,7 @@ import {
     LinearScale,
     PointElement,
     LineElement,
-    BarElement, // <-- Add this
+    BarElement,
     Title,
     Tooltip,
     Legend
@@ -16,6 +15,7 @@ import {
 import api from '../services/api';
 import { WeatherStation } from '../types';
 import { useSidebar } from '../contexts/SidebarContext';
+import { useParams } from 'react-router-dom';
 
 // Register ChartJS components
 ChartJS.register(
@@ -23,7 +23,7 @@ ChartJS.register(
     LinearScale,
     PointElement,
     LineElement,
-    BarElement, // <-- Register BarElement
+    BarElement,
     Title,
     Tooltip,
     Legend
@@ -44,7 +44,41 @@ const StationPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [chartData, setChartData] = useState<any>(null);
-    const { showTables, showCharts, activeTable, activeCharts } = useSidebar();
+    const { getSidebarState, setSidebarState } = useSidebar();
+
+    // Use per-station state
+    const sidebarState = getSidebarState(stationName || '');
+    const { showTables, showCharts, activeTable, activeCharts } = sidebarState;
+
+    // Helper to get per-station table key
+    const getTableKey = (tableId: string) => `${stationName}|${tableId}`;
+
+    // Redefine window.toggleTable to use per-station key
+    useEffect(() => {
+        window.toggleTable = (tableId: string) => {
+            const key = getTableKey(tableId);
+            const wrapper = document.getElementById(tableId + "Wrapper");
+            const button = document.querySelector(`[data-table="${tableId}"]`);
+            if (wrapper && wrapper.style.display === "none") {
+                wrapper.style.display = "";
+                if (button) {
+                    button.classList.add('btn-filled');
+                    button.classList.remove('btn-outline-light');
+                }
+                if (!window.$.fn.DataTable.isDataTable(`#${tableId}`)) {
+                    window.initializeTable(tableId);
+                }
+                localStorage.setItem(key, 'enabled');
+            } else if (wrapper) {
+                wrapper.style.display = "none";
+                if (button) {
+                    button.classList.remove('btn-filled');
+                    button.classList.add('btn-outline-light');
+                }
+                localStorage.removeItem(key);
+            }
+        };
+    }, [stationName]);
 
     // Function to destroy all DataTables
     const destroyAllTables = () => {
@@ -274,7 +308,7 @@ const StationPage: React.FC = () => {
         const tables = ['generalWeatherTable', 'detailedWeatherTable', 'heatUnitsTable', 'seasonalChillUnitsTable'];
         
         tables.forEach(tableId => {
-            const state = localStorage.getItem(tableId);
+            const state = localStorage.getItem(getTableKey(tableId));
             const wrapper = document.getElementById(tableId + "Wrapper");
             const button = document.querySelector(`[data-table="${tableId}"]`);
 
@@ -362,6 +396,25 @@ const StationPage: React.FC = () => {
             initializeEnabledTables();
         }
     }, [showTables, showCharts]);
+
+    // Update sidebar state when toggles change (example for showTables)
+    const handleToggleShowTables = () => {
+        if (!stationName) return;
+        const newValue = !showTables;
+        setSidebarState(stationName, { showTables: newValue });
+    };
+
+    useEffect(() => {
+        if (!stationName) return;
+        // On first load for this station, ensure General Summary is enabled if no tables are toggled
+        const generalKey = getTableKey('generalWeatherTable');
+        const tables = ['generalWeatherTable', 'detailedWeatherTable', 'heatUnitsTable', 'seasonalChillUnitsTable'];
+        const anyTableEnabled = tables.some(tableId => localStorage.getItem(getTableKey(tableId)) === 'enabled');
+        if (!anyTableEnabled) {
+            localStorage.setItem(generalKey, 'enabled');
+        }
+        initializeEnabledTables();
+    }, [stationName]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
