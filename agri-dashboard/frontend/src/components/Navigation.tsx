@@ -21,11 +21,11 @@ const Navigation: React.FC<NavigationProps> = ({ onToggleSidebar }) => {
             id="sidebarToggle" 
             onClick={onToggleSidebar}
           >
-            <List size={24} />
+            <List size={24} color="white" />
           </button>
         ) : (
           <div className="btn btn-link btn-lg" style={{ opacity: 0, pointerEvents: 'none' }}>
-            <List size={24} />
+            <List size={24} color="white" />
           </div>
         )}
         <Navbar.Brand as={Link} to="/">

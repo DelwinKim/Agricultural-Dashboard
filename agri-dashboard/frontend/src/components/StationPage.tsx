@@ -29,18 +29,36 @@ const StationPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    // Function to destroy all DataTables
+    const destroyAllTables = () => {
+        const tables = ['generalWeatherTable', 'detailedWeatherTable', 'heatUnitsTable', 'seasonalChillUnitsTable'];
+        tables.forEach(tableId => {
+            if (window.$.fn.DataTable.isDataTable(`#${tableId}`)) {
+                window.$(`#${tableId}`).DataTable().destroy();
+            }
+        });
+    };
+
     useEffect(() => {
         const fetchStation = async () => {
             try {
+                setLoading(true);
+                setError(null);
                 const stations = await api.getStations();
                 const foundStation = stations.find(s => s.name === stationName);
                 if (foundStation) {
                     setStation(foundStation);
                 } else {
+                    setStation(null);
                     setError('Station not found');
+                    // Destroy any existing tables when station is not found
+                    destroyAllTables();
                 }
             } catch (err) {
+                setStation(null);
                 setError('Failed to fetch station data');
+                // Destroy any existing tables on error
+                destroyAllTables();
             } finally {
                 setLoading(false);
             }
@@ -49,20 +67,21 @@ const StationPage: React.FC = () => {
     }, [stationName]);
 
     useEffect(() => {
-        if (station && window.$) {
+        if (station && window.$ && !error) {
             try {
+                // Destroy existing tables first
+                destroyAllTables();
+
                 // Initialize the default table
-                if (!window.$.fn.DataTable.isDataTable('#generalWeatherTable')) {
-                    window.initializeTable('generalWeatherTable');
-                    // Set the button state
-                    const defaultButton = document.querySelector('[data-table="generalWeatherTable"]');
-                    if (defaultButton) {
-                        defaultButton.classList.add('btn-filled');
-                        defaultButton.classList.remove('btn-outline-light');
-                    }
-                    // Set localStorage state
-                    localStorage.setItem('generalWeatherTable', 'enabled');
+                window.initializeTable('generalWeatherTable');
+                // Set the button state
+                const defaultButton = document.querySelector('[data-table="generalWeatherTable"]');
+                if (defaultButton) {
+                    defaultButton.classList.add('btn-filled');
+                    defaultButton.classList.remove('btn-outline-light');
                 }
+                // Set localStorage state
+                localStorage.setItem('generalWeatherTable', 'enabled');
 
                 // Check other tables' states and initialize if previously enabled
                 const tables = ['detailedWeatherTable', 'heatUnitsTable', 'seasonalChillUnitsTable'];
@@ -78,9 +97,7 @@ const StationPage: React.FC = () => {
                             button.classList.add('btn-filled');
                             button.classList.remove('btn-outline-light');
                         }
-                        if (!window.$.fn.DataTable.isDataTable(`#${tableId}`)) {
-                            window.initializeTable(tableId);
-                        }
+                        window.initializeTable(tableId);
                     } else if (wrapper) {
                         wrapper.style.display = "none";
                         if (button) {
@@ -94,7 +111,7 @@ const StationPage: React.FC = () => {
                 setError('Failed to initialize tables');
             }
         }
-    }, [station]);
+    }, [station, error]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
