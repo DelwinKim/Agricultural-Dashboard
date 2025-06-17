@@ -1,6 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
+import { 
+    House, 
+    CloudSun, 
+    ThermometerHalf, 
+    Droplet, 
+    Wind, 
+    Sun, 
+    Table,
+    BarChart
+} from 'react-bootstrap-icons';
+import { useSidebar } from '../contexts/SidebarContext';
 
 interface SideNavigationProps {
     onToggleTable: (tableName: string) => void;
@@ -13,35 +24,31 @@ interface SideNavigationProps {
 }
 
 const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTables }) => {
-    const [isCollapsed, setIsCollapsed] = useState(() => {
-        return localStorage.getItem('sb|sidebar-toggle') === 'true';
-    });
+    const location = useLocation();
+    const isStationPage = location.pathname.startsWith('/station/');
     const [tablesExpanded, setTablesExpanded] = useState(() => {
         return localStorage.getItem('sb|tables-accordion-open') !== 'false';
     });
-
-    const location = useLocation();
-
-    useEffect(() => {
-        localStorage.setItem('sb|sidebar-toggle', isCollapsed.toString());
-    }, [isCollapsed]);
-
-    useEffect(() => {
-        localStorage.setItem('sb|tables-accordion-open', tablesExpanded.toString());
-    }, [tablesExpanded]);
-
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
-    };
+    const [chartsExpanded, setChartsExpanded] = useState(false);
+    const { showCharts, setShowCharts, activeCharts, setActiveCharts } = useSidebar();
 
     const toggleTables = () => {
         setTablesExpanded(!tablesExpanded);
+        localStorage.setItem('sb|tables-accordion-open', (!tablesExpanded).toString());
     };
 
-    const handleToggleTable = (tableId: string) => {
-        if (window.toggleTable) {
-            window.toggleTable(tableId);
-        }
+    const toggleCharts = () => {
+        setChartsExpanded(!chartsExpanded);
+        setShowCharts(!showCharts);
+    };
+
+    const handleChartToggle = (chartType: string) => {
+        setActiveCharts(((prev: string[]) =>
+            prev.includes(chartType)
+                ? prev.filter((c: string) => c !== chartType)
+                : [...prev, chartType]
+        ) as unknown as string[]);
+        setShowCharts(true);
     };
 
     return (
@@ -59,7 +66,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                         onClick={toggleTables}
                     >
                         <div className="sb-nav-link-icon">
-                            <i className="fas fa-table"></i>
+                            <Table />
                         </div>
                         Tables
                         <div className="sb-sidenav-collapse-arrow">
@@ -109,6 +116,71 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                             </div>
                         </nav>
                     </div>
+
+                    {/* Charts Section */}
+                    <a 
+                        className={`nav-link ${chartsExpanded ? '' : 'collapsed'}`} 
+                        href="#" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#collapseCharts" 
+                        aria-expanded={chartsExpanded} 
+                        aria-controls="collapseCharts"
+                        onClick={toggleCharts}
+                    >
+                        <div className="sb-nav-link-icon">
+                            <BarChart />
+                        </div>
+                        Charts
+                        <div className="sb-sidenav-collapse-arrow">
+                            <i className="fas fa-angle-down"></i>
+                        </div>
+                    </a>
+                    <div 
+                        className={`collapse ${chartsExpanded ? 'show' : ''}`} 
+                        id="collapseCharts" 
+                        aria-labelledby="headingCharts" 
+                        data-bs-parent="#sidenavAccordion"
+                    >
+                        <nav className="sb-sidenav-menu-nested nav flex-column">
+                            <div className="btn-group d-flex flex-column">
+                                <button 
+                                    className={`btn btn-sm ${activeCharts.includes('temperature') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    onClick={() => handleChartToggle('temperature')}
+                                >
+                                    <ThermometerHalf className="me-2" />
+                                    Temperature
+                                </button>
+                                <button 
+                                    className={`btn btn-sm ${activeCharts.includes('rainfall') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    onClick={() => handleChartToggle('rainfall')}
+                                >
+                                    <Droplet className="me-2" />
+                                    Rainfall
+                                </button>
+                                <button 
+                                    className={`btn btn-sm ${activeCharts.includes('wind') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    onClick={() => handleChartToggle('wind')}
+                                >
+                                    <Wind className="me-2" />
+                                    Wind
+                                </button>
+                                <button 
+                                    className={`btn btn-sm ${activeCharts.includes('humidity-dewpoint') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    onClick={() => handleChartToggle('humidity-dewpoint')}
+                                >
+                                    <Droplet className="me-2" />
+                                    Min RH & Dew Point
+                                </button>
+                                <button 
+                                    className={`btn btn-sm ${activeCharts.includes('cumulative-heat-units') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    onClick={() => handleChartToggle('cumulative-heat-units')}
+                                >
+                                    <Sun className="me-2" />
+                                    Cumulative Heat Units
+                                </button>
+                            </div>
+                        </nav>
+                    </div>
                 </div>
             </div>
             <div className="sb-sidenav-footer">
@@ -119,4 +191,4 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
     );
 };
 
-export default SideNavigation; 
+export default SideNavigation;

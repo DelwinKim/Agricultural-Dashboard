@@ -49,7 +49,7 @@ const Navigation: React.FC<NavigationProps> = ({ onToggleSidebar }) => {
               <i className="fas fa-download me-1"></i>
               Download Data
             </Nav.Link>
-          </Nav>
+           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>

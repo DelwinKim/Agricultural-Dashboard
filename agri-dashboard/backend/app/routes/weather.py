@@ -255,4 +255,41 @@ def download_data():
 
     except Exception as e:
         logger.error(f"Error downloading data: {str(e)}")
-        return jsonify({'error': str(e)}), 500 
+        return jsonify({'error': str(e)}), 500
+
+@weather_bp.route('/weather/chart-data/', methods=['GET'])
+def get_chart_data():
+    try:
+        station_name = request.args.get('station_name', type=str)
+        start = request.args.get('start', default=0, type=int)
+        length = request.args.get('length', default=30, type=int)
+        if not station_name:
+            return jsonify({'error': 'Station name is required'}), 400
+        station = WeatherStation.query.filter_by(name=station_name).first()
+        if not station:
+            return jsonify({'error': 'Station not found'}), 404
+        # Get general weather data
+        general_query = GeneralWeatherData.query.filter_by(station_id=station.id).order_by(GeneralWeatherData.date.desc())
+        general_data = general_query.offset(start).limit(length).all()
+        # Get detailed weather data
+        detailed_query = DetailedWeatherData.query.filter_by(station_id=station.id).order_by(DetailedWeatherData.date.desc())
+        detailed_data = {d.date: d for d in detailed_query.offset(start).limit(length).all()}
+        # Get heat units data
+        heatunits_query = HeatUnitsData.query.filter_by(station_id=station.id).order_by(HeatUnitsData.date.desc())
+        heatunits_data = {h.date: h for h in heatunits_query.offset(start).limit(length).all()}
+        # Merge data by date
+        chart_data = []
+        for g in general_data:
+            date = g.date
+            d = detailed_data.get(date)
+            h = heatunits_data.get(date)
+            row = g.to_dict()
+            if d:
+                row.update(d.to_dict())
+            if h:
+                row.update(h.to_dict())
+            chart_data.append(row)
+        return jsonify(chart_data)
+    except Exception as e:
+        logger.error(f"Error fetching chart data: {str(e)}")
+        return jsonify({'error': str(e)}), 500

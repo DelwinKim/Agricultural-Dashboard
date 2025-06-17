@@ -10,6 +10,13 @@ interface DownloadDataParams {
     fields: string[];
 }
 
+export interface ChartData {
+    date: string;
+    max_temp: number;
+    rainfall: number;
+    // Add other fields as needed
+}
+
 const api = {
     API_BASE_URL,
     // Get all weather stations
@@ -75,7 +82,23 @@ const api = {
             responseType: 'blob'
         });
         return response;
-    }
+    },
+
+    getStationChartData: async (stationName: string): Promise<ChartData[]> => {
+        const response = await fetch(`${API_BASE_URL}/station/${stationName}/chart-data`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch chart data');
+        }
+        return response.json();
+    },
+
+    // Get merged chart data for a station
+    getChartData: async (stationName: string, start: number = 0, length: number = 30): Promise<any[]> => {
+        const response = await axios.get(`${API_BASE_URL}/weather/chart-data/`, {
+            params: { station_name: stationName, start, length }
+        });
+        return response.data;
+    },
 };
 
-export default api; 
+export default api;

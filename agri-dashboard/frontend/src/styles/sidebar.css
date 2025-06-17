@@ -368,4 +368,42 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-} 
+}
+
+.split-view {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: calc(100vh - 120px);
+    margin-bottom: 0;
+}
+
+.gutter {
+    background-color: #e3e6f0;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transition: background-color 0.2s;
+}
+
+.gutter:hover,
+.gutter:active {
+    background-color: #4e73df;
+}
+
+.gutter.gutter-horizontal {
+    cursor: col-resize;
+    width: 10px;
+}
+
+.tables-section,
+.charts-section {
+    height: 100%;
+    overflow: auto;
+    padding-bottom: 0;
+}
+
+.charts-section .card {
+}
+
+.charts-section .card-body {
+}
