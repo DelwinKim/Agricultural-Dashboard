@@ -293,3 +293,7 @@ def get_chart_data():
     except Exception as e:
         logger.error(f"Error fetching chart data: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@weather_bp.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({'status': 'ok', 'message': 'pong'}), 200
