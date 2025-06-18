@@ -40,6 +40,9 @@ declare global {
 
 const StationPage: React.FC = () => {
     const { stationName } = useParams<{ stationName: string }>();
+    const decodedStationName = stationName ? decodeURIComponent(stationName) : '';
+    console.log('DEBUG: stationName param from URL:', stationName);
+    console.log('DEBUG: decodedStationName:', decodedStationName);
     const [station, setStation] = useState<WeatherStation | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -47,11 +50,11 @@ const StationPage: React.FC = () => {
     const { getSidebarState, setSidebarState } = useSidebar();
 
     // Use per-station state
-    const sidebarState = getSidebarState(stationName || '');
+    const sidebarState = getSidebarState(decodedStationName);
     const { showTables, showCharts, activeTable, activeCharts } = sidebarState;
 
     // Helper to get per-station table key
-    const getTableKey = (tableId: string) => `${stationName}|${tableId}`;
+    const getTableKey = (tableId: string) => `${decodedStationName}|${tableId}`;
 
     // Redefine window.toggleTable to use per-station key
     useEffect(() => {
@@ -358,6 +361,7 @@ const StationPage: React.FC = () => {
 
     useEffect(() => {
         if (station && showCharts) {
+            console.log('DEBUG: About to call api.getChartData with:', station.name, decodedStationName);
             api.getChartData(station.name)
                 .then(data => {
                     setChartData(data);

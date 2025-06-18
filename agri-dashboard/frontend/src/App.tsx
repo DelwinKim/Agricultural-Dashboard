@@ -11,7 +11,7 @@ import { SidebarProvider } from './contexts/SidebarContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/App.css';
 import './styles/dropdown.css';
-
+    
 // Create a wrapper component to handle the layout
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const location = useLocation();

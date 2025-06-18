@@ -456,8 +456,11 @@ function initializeTable(tableId) {
 
     // Get station name from the URL
     const urlParams = new URLSearchParams(window.location.search);
-    const stationName = decodeURIComponent(window.location.pathname.split('/').pop());
-
+    const stationName =
+        decodeURIComponent(
+            (window.location.hash || window.location.pathname).split('/').pop()
+        );
+        
     if (tableId !== 'seasonalChillUnitsTable') {  // dynamic rendering through ajax
         const table = $(`#${tableId}`).DataTable({
             "processing": true,

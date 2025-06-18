@@ -47,7 +47,7 @@ const RecentDataDropdown: React.FC = () => {
                             <NavDropdown.Item 
                                 key={station} 
                                 as={Link} 
-                                to={`/station/${station}`}
+                                to={`/station/${encodeURIComponent(station)}`}
                             >
                                 {station}
                             </NavDropdown.Item>
@@ -59,4 +59,4 @@ const RecentDataDropdown: React.FC = () => {
     );
 };
 
-export default RecentDataDropdown; 
+export default RecentDataDropdown;

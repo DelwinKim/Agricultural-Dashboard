@@ -12,7 +12,7 @@ const regions_and_stations = {
   "Greater Texas": ["Not Available"],
   "Lower Rio Grande": ["Not Available"],
   "South Central": ["Not Available"],
-  "The Metroplex": ["Not Available"],
+  "The Metroplex": ["Not Available"],   
   "West Texas": ["Not Available"],
   "Winter Garden": ["Not Available"],
 };
@@ -65,7 +65,7 @@ const HomePage: React.FC = () => {
             {Object.entries(recentWeatherData).map(([stationName, data]) => (
               <tr key={stationName}>
                 <td>
-                  <Link to={`/station/${stationName}`} style={{ textDecoration: 'none' }}>
+                  <Link to={`/station/${encodeURIComponent(stationName)}`} style={{ textDecoration: 'none' }}>
                     {stationName}
                   </Link>
                 </td>
@@ -86,4 +86,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage; 
+export default HomePage;
