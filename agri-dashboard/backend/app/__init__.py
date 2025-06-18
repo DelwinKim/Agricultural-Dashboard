@@ -29,7 +29,7 @@ def create_app(config_class=Config):
     # Configure CORS
     CORS(app, resources={
         r"/api/*": {
-            "origins": ["http://localhost:3001", "http://localhost:3000", "https://delwinkim.github.io/"],
+            "origins": ["http://localhost:3001", "http://localhost:3000", "https://delwinkim.github.io"],
             "methods": ["GET", "POST", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
         }
