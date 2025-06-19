@@ -6,7 +6,10 @@ import logging
 from sqlalchemy import text
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
+# Suppress urllib3 debug messages
+logging.getLogger('urllib3').setLevel(logging.WARNING)
+logging.getLogger('requests').setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 db = SQLAlchemy()

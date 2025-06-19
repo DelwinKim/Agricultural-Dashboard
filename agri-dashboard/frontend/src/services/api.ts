@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { WeatherStation, GeneralWeatherData, DetailedWeatherData, HeatUnitsData, SeasonalChillUnitsData } from '../types';
 
-// const API_BASE_URL = 'http://localhost:5000/api';
-// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-const API_BASE_URL = 'https://agricultural-dashboard-github-version.onrender.com/api';
-
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+if (!API_BASE_URL) {
+    throw new Error('REACT_APP_API_BASE_URL is not defined');
+}
 
 interface DownloadDataParams {
     station: number;
