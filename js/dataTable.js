@@ -1,5 +1,5 @@
 // const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-const API_BASE_URL = "https://agricultural-dashboard-github-version.onrender.com/api"; // or your production URL
+const API_BASE_URL = "http://localhost:5000/api"; // or your production URL
 
 const tableConfig = {
     generalWeatherTable: {
@@ -17,6 +17,15 @@ const tableConfig = {
         ],
         footerCallback: function (row, data, start, end, display) {
             let api = this.api();
+
+            // Defensive: If data is undefined or empty, skip calculations
+            if (!Array.isArray(data) || data.length === 0) {
+                $(api.column(0).footer()).html('No Data');
+                for (let i = 1; i <= 8; i++) {
+                    $(api.column(i).footer()).html('');
+                }
+                return;
+            }
 
             // Remove the formatting to get integer data for summation
             let intVal = function (i) {
@@ -93,6 +102,15 @@ const tableConfig = {
         footerCallback: function (row, data, start, end, display) {
             let api = this.api();
 
+            // Defensive: If data is undefined or empty, skip calculations
+            if (!Array.isArray(data) || data.length === 0) {
+                $(api.column(0).footer()).html('No Data');
+                for (let i = 1; i <= 6; i++) {
+                    $(api.column(i).footer()).html('');
+                }
+                return;
+            }
+
             // Remove the formatting to get integer data for summation
             let intVal = function (i) {
                 return typeof i === 'string'
@@ -155,6 +173,15 @@ const tableConfig = {
         ],
         footerCallback: function (row, data, start, end, display) {
             let api = this.api();
+
+            // Defensive: If data is undefined or empty, skip calculations
+            if (!Array.isArray(data) || data.length === 0) {
+                $(api.column(0).footer()).html('No Data');
+                for (let i = 1; i <= 6; i++) {
+                    $(api.column(i).footer()).html('');
+                }
+                return;
+            }
 
             // Remove the formatting to get integer data for summation
             let intVal = function (i) {
@@ -414,7 +441,9 @@ $.fn.dataTable.pipeline = function (opts) {
             // Assemble the full dataset for the requested page
             cachedData = [];
             for (var i = requestStart; i < requestEnd; i++) {
-                cachedData.push(rowCache[i]);
+                if (rowCache[i] !== undefined) {
+                    cachedData.push(rowCache[i]);
+                }
             }
 
             // Replace json.data with the cachedData
@@ -477,6 +506,11 @@ function initializeTable(tableId) {
                 type: "GET",
                 "data": function(d) {
                     d.station_name = stationName;  // Add station name to the request
+                    // Add global date filter values if present
+                    var min = document.getElementById('minDateFilter')?.value;
+                    var max = document.getElementById('maxDateFilter')?.value;
+                    if (min) d.start_date = min;
+                    if (max) d.end_date = max;
                     return d;
                 }        
             }),
@@ -516,6 +550,79 @@ function initializeTable(tableId) {
     console.log(`Initializing DataTable for table: ${tableId}`);
 }
 
+
+// Utility: debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+// Patch: debounce table initialization to prevent rapid toggling issues
+window.debouncedInitializeTable = debounce(function(tableId) {
+    initializeTable(tableId);
+}, 250);
+
+// Patch: use debouncedInitializeTable in toggleTable
+window.toggleTable = function(tableId) {
+    const key = getTableKey(tableId);
+    const wrapper = document.getElementById(tableId + "Wrapper");
+    const button = document.querySelector(`[data-table="${tableId}"]`);
+    if (wrapper && wrapper.style.display === "none") {
+        wrapper.style.display = "";
+        if (button) {
+            button.classList.add('btn-filled');
+            button.classList.remove('btn-outline-light');
+        }
+        if (!window.$.fn.DataTable.isDataTable(`#${tableId}`)) {
+            window.debouncedInitializeTable(tableId);
+        }
+        localStorage.setItem(key, 'enabled');
+    } else if (wrapper) {
+        wrapper.style.display = "none";
+        if (button) {
+            button.classList.remove('btn-filled');
+            button.classList.add('btn-outline-light');
+        }
+        localStorage.removeItem(key);
+    }
+};
+
+// Utility to generate a unique key for a table (for localStorage, etc.)
+function getTableKey(tableId) {
+    // You can customize this if you want to namespace by station, etc.
+    // For now, just return the tableId
+    return tableId;
+}
+
+// Initialize all enabled tables based on localStorage state
+function initializeEnabledTables() {
+    const tables = ['generalWeatherTable', 'detailedWeatherTable', 'heatUnitsTable', 'seasonalChillUnitsTable'];
+    tables.forEach(tableId => {
+        const key = getTableKey(tableId);
+        const state = localStorage.getItem(key);
+        const button = document.querySelector(`[data-table="${tableId}"]`);
+        const wrapper = document.getElementById(tableId + "Wrapper");
+        if (state === 'enabled' && wrapper) {
+            wrapper.style.display = "";
+            if (button) {
+                button.classList.add('btn-filled');
+                button.classList.remove('btn-outline-light');
+            }
+            if (!$.fn.DataTable.isDataTable(`#${tableId}`)) {
+                initializeTable(tableId);
+            }
+        } else if (wrapper) {
+            wrapper.style.display = "none";
+            if (button) {
+                button.classList.remove('btn-filled');
+                button.classList.add('btn-outline-light');
+            }
+        }
+    });
+}
 
 // Initialize the default table and check states on page load
 $(document).ready(function() {
@@ -597,5 +704,13 @@ $(document).ready(function() {
             }
         });
     }
-});
 
+    // Listen for changes on the date inputs and redraw all DataTables, clearing the pipeline cache
+    $(document).on('change', '#minDateFilter, #maxDateFilter', function() {
+        ['#generalWeatherTable', '#detailedWeatherTable', '#heatUnitsTable'].forEach(function(sel) {
+            if ($.fn.DataTable.isDataTable(sel)) {
+                $(sel).DataTable().clearPipeline().draw();
+            }
+        });
+    });
+});
