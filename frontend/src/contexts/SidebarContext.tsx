@@ -5,6 +5,8 @@ interface StationSidebarState {
     showCharts: boolean;
     activeTable: string;
     activeCharts: string[];
+    startDate?: string;
+    endDate?: string;
 }
 
 interface SidebarContextType {
@@ -17,6 +19,8 @@ const defaultSidebarState: StationSidebarState = {
     showCharts: false,
     activeTable: 'general',
     activeCharts: ['temperature'],
+    startDate: '',
+    endDate: '',
 };
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);

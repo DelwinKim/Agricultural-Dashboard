@@ -17,6 +17,7 @@ import api from '../services/api';
 import { WeatherStation } from '../types';
 import { useSidebar } from '../contexts/SidebarContext';
 import { useParams } from 'react-router-dom';
+import { Clipboard2Data, Snow, Fire, FileText } from 'react-bootstrap-icons';
 
 // Register ChartJS components
 ChartJS.register(
@@ -50,10 +51,8 @@ const StationPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [chartData, setChartData] = useState<any>(null);
     const { getSidebarState, setSidebarState } = useSidebar();
-
-    // Use per-station state
     const sidebarState = getSidebarState(decodedStationName);
-    const { showTables, showCharts, activeTable, activeCharts } = sidebarState;
+    const { showTables, showCharts, activeTable, activeCharts, startDate = '', endDate = '' } = sidebarState;
 
     // Helper to get per-station table key
     const getTableKey = (tableId: string) => `${decodedStationName}|${tableId}`;
@@ -361,18 +360,54 @@ const StationPage: React.FC = () => {
         fetchStation();
     }, [stationName]);
 
-    useEffect(() => {
-        if (station && showCharts) {
-            console.log('DEBUG: About to call api.getChartData with:', station.name, decodedStationName);
-            api.getChartData(station.name)
-                .then(data => {
-                    setChartData(data);
-                })
-                .catch(err => {
-                    console.error('Error fetching chart data:', err);
-                });
+    // Track last chart data params to avoid unnecessary fetches
+    const [lastChartParams, setLastChartParams] = useState<any>({});
+
+    // Fetch chart data with date range
+    const fetchChartData = () => {
+        if (!station) return;
+        // Use a stable, sorted string for activeCharts
+        const activeChartsKey = Array.isArray(activeCharts) ? [...activeCharts].sort().join(',') : '';
+        const params = {
+            station: station.name,
+            startDate,
+            endDate,
+            activeCharts: activeChartsKey,
+        };
+        if (
+            lastChartParams.station === params.station &&
+            lastChartParams.startDate === params.startDate &&
+            lastChartParams.endDate === params.endDate &&
+            lastChartParams.activeCharts === params.activeCharts
+        ) {
+            return; // No need to fetch
         }
-    }, [station, showCharts, activeCharts]);
+        setLastChartParams(params);
+        let length;
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const days = Math.abs(Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))) + 1;
+            length = days > 0 ? days : 30;
+        } else if (startDate || endDate) {
+            length = 10000;
+        } else {
+            length = 30;
+        }
+        api.getChartData(station.name, 0, length, startDate, endDate)
+            .then(data => {
+                setChartData(data);
+            })
+            .catch(err => {
+                console.error('Error fetching chart data:', err);
+            });
+    };
+
+    // Only fetch chart data when station, date range, or activeCharts changes (not showCharts)
+    useEffect(() => {
+        fetchChartData();
+        // eslint-disable-next-line
+    }, [station, activeCharts, startDate, endDate]);
 
     useEffect(() => {
         if (station && window.$ && !error) {
@@ -428,8 +463,9 @@ const StationPage: React.FC = () => {
 
     return (
         <div className="container-fluid">
-            <h1 className="h3 mt-4 mb-4 text-gray-800">{station.name}'s Weather Summary</h1>
-            
+            <h1 className="h3 mt-4 mb-4 text-gray-800 text-center w-100">{station.name}'s Weather Summary</h1>
+            {/* Date picker removed; now in sidebar */}
+
             {showTables && showCharts ? (
                 <Split
                     sizes={[50, 50]}
@@ -445,7 +481,8 @@ const StationPage: React.FC = () => {
                 >
                     <div className="tables-section">
             <div id="generalWeatherTableWrapper" className="card shadow mb-4">
-                <div className="card-header py-3">
+                <div className="card-header py-3 d-flex align-items-center">
+                    <Clipboard2Data style={{ marginRight: 8 }} />
                     <h6 className="m-0 font-weight-bold">General Summary</h6>
                 </div>
                 <div className="card-body">
@@ -483,7 +520,8 @@ const StationPage: React.FC = () => {
             </div>
 
             <div id="detailedWeatherTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
-                <div className="card-header py-3">
+                <div className="card-header py-3 d-flex align-items-center">
+                    <FileText style={{ marginRight: 8 }} />
                     <h6 className="m-0 font-weight-bold">Detailed Summary</h6>
                 </div>
                 <div className="card-body">
@@ -517,7 +555,8 @@ const StationPage: React.FC = () => {
             </div>
 
             <div id="heatUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
-                <div className="card-header py-3">
+                <div className="card-header py-3 d-flex align-items-center">
+                    <Fire style={{ marginRight: 8 }} />
                     <h6 className="m-0 font-weight-bold">Heat Units</h6>
                 </div>
                 <div className="card-body">
@@ -551,7 +590,8 @@ const StationPage: React.FC = () => {
             </div>
 
             <div id="seasonalChillUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
-                <div className="card-header py-3">
+                <div className="card-header py-3 d-flex align-items-center">
+                    <Snow style={{ marginRight: 8 }} />
                     <h6 className="m-0 font-weight-bold">Seasonal Chill Units</h6>
                 </div>
                 <div className="card-body">
@@ -647,7 +687,8 @@ const StationPage: React.FC = () => {
             ) : showTables ? (
                 <div className="tables-section">
                     <div id="generalWeatherTableWrapper" className="card shadow mb-4">
-                        <div className="card-header py-3">
+                        <div className="card-header py-3 d-flex align-items-center">
+                            <Clipboard2Data style={{ marginRight: 8 }} />
                             <h6 className="m-0 font-weight-bold">General Summary</h6>
                         </div>
                         <div className="card-body">
@@ -685,7 +726,8 @@ const StationPage: React.FC = () => {
                     </div>
 
                     <div id="detailedWeatherTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
-                        <div className="card-header py-3">
+                        <div className="card-header py-3 d-flex align-items-center">
+                            <FileText style={{ marginRight: 8 }} />
                             <h6 className="m-0 font-weight-bold">Detailed Summary</h6>
                         </div>
                         <div className="card-body">
@@ -719,7 +761,8 @@ const StationPage: React.FC = () => {
                     </div>
 
                     <div id="heatUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
-                        <div className="card-header py-3">
+                        <div className="card-header py-3 d-flex align-items-center">
+                            <Fire style={{ marginRight: 8 }} />
                             <h6 className="m-0 font-weight-bold">Heat Units</h6>
                         </div>
                         <div className="card-body">
@@ -753,7 +796,8 @@ const StationPage: React.FC = () => {
             </div>
 
             <div id="seasonalChillUnitsTableWrapper" className="card shadow mb-4" style={{ display: 'none' }}>
-                <div className="card-header py-3">
+                <div className="card-header py-3 d-flex align-items-center">
+                    <Snow style={{ marginRight: 8 }} />
                     <h6 className="m-0 font-weight-bold">Seasonal Chill Units</h6>
                 </div>
                 <div className="card-body">

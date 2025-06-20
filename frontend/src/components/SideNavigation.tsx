@@ -11,7 +11,12 @@ import {
     Table,
     BarChart,
     ChevronDown,
-    ChevronRight
+    ChevronRight,
+    Snow,
+    Fire,
+    FileText,
+    Clipboard2Data,
+    File,
 } from 'react-bootstrap-icons';
 import { useSidebar } from '../contexts/SidebarContext';
 
@@ -31,7 +36,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
     const isStationPage = location.pathname.startsWith('/station/');
     const { getSidebarState, setSidebarState } = useSidebar();
     const sidebarState = getSidebarState(stationName || '');
-    const { showCharts, showTables, activeCharts } = sidebarState;
+    const { showCharts, showTables, activeCharts, startDate = '', endDate = '' } = sidebarState;
 
     // Dropdown expanded state is now per-station
     const tablesExpanded = showTables;
@@ -51,6 +56,9 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
             : [...activeCharts, chartType];
         setSidebarState(stationName || '', { activeCharts: newCharts, showCharts: true });
     };
+
+    // Date picker state and handlers (lifted from StationPage)
+    // Optionally, sync with context or localStorage if you want persistence
 
     return (
         <nav className="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
@@ -88,6 +96,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                                     data-table="generalWeatherTable"
                                     onClick={() => window.toggleTable('generalWeatherTable')}
                                 >
+                                    <Clipboard2Data className="me-2" />
                                     General Summary
                                 </button>
                                 <button 
@@ -96,6 +105,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                                     data-table="detailedWeatherTable"
                                     onClick={() => window.toggleTable('detailedWeatherTable')}
                                 >
+                                    <FileText className="me-2" />
                                     Detailed Summary
                                 </button>
                                 <button 
@@ -104,6 +114,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                                     data-table="heatUnitsTable"
                                     onClick={() => window.toggleTable('heatUnitsTable')}
                                 >
+                                    <Fire className="me-2" />    
                                     Heat Units
                                 </button>
                                 <button 
@@ -112,6 +123,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                                     data-table="seasonalChillUnitsTable"
                                     onClick={() => window.toggleTable('seasonalChillUnitsTable')}
                                 >
+                                    <Snow className="me-2" />
                                     Chill Units
                                 </button>
                             </div>
@@ -182,12 +194,36 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                             </div>
                         </nav>
                     </div>
+                    {/* Date Picker Section */}
+                    <div className="mb-3 p-2 d-flex justify-content-center" style={{ background: 'inherit', borderRadius: 8 }}>
+                        <div className="d-flex flex-column align-items-center w-100" style={{ gap: '0.5rem' }}>
+                            <label style={{ fontWeight: 500, width: '100%', textAlign: 'center' }}>
+                                <i className="bi bi-calendar-date me-2" />Start Date
+                                <input id="minDateFilter" type="date" className="form-control mt-1 mx-auto" style={{ minWidth: 140, maxWidth: 180 }} value={startDate} onChange={e => setSidebarState(stationName || '', { startDate: e.target.value })} />
+                            </label>
+                            <label style={{ fontWeight: 500, width: '100%', textAlign: 'center' }}>
+                                <i className="bi bi-calendar-date me-2" />End Date
+                                <input id="maxDateFilter" type="date" className="form-control mt-1 mx-auto" style={{ minWidth: 140, maxWidth: 180 }} value={endDate} onChange={e => setSidebarState(stationName || '', { endDate: e.target.value })} />
+                            </label>
+                            {(startDate || endDate) && (
+                                <button className="btn btn-outline-secondary btn-sm mt-2 mx-auto" type="button" onClick={() => {
+                                    setSidebarState(stationName || '', { startDate: '', endDate: '' });
+                                    // Also trigger change event for DataTables to clear filters
+                                    setTimeout(() => {
+                                        const minInput = document.getElementById('minDateFilter');
+                                        const maxInput = document.getElementById('maxDateFilter');
+                                        if (minInput) minInput.dispatchEvent(new Event('change', { bubbles: true }));
+                                        if (maxInput) maxInput.dispatchEvent(new Event('change', { bubbles: true }));
+                                    }, 0);
+                                }}>
+                                    Clear
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="sb-sidenav-footer">
-                <div className="small">Logged in as:</div>
-                Start Bootstrap
-            </div>
+            {/* Removed sb-sidenav-footer with 'Logged in as: Start Bootstrap' */}
         </nav>
     );
 };

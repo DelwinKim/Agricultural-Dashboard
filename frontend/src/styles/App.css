@@ -32,13 +32,14 @@
 
 /* Button styles */
 .btn-filled {
-    background-color: #007bff;
-    color: white;
+    background-color: inherit !important;
+    color: #007bff !important;
+    /* Keep everything else the same, but do not change background */
 }
 
 .btn-filled:hover {
-    background-color: #0056b3;
-    color: white;
+    background-color: inherit !important;
+    color: #0056b3 !important;
 }
 
 /* Background gradient */

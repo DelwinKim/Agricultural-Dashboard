@@ -29,6 +29,8 @@ def get_general_weather_table():
         start = request.args.get('start', default=0, type=int)
         length = request.args.get('length', default=7, type=int)
         station_name = request.args.get('station_name', type=str)
+        start_date = request.args.get('start_date', type=str)
+        end_date = request.args.get('end_date', type=str)
         
         if not station_name:
             return jsonify({'error': 'Station name is required'}), 400
@@ -38,16 +40,24 @@ def get_general_weather_table():
             return jsonify({'error': 'Station not found'}), 404
         
         logger.info(f"Fetching general weather for station {station.name}")
-        query = GeneralWeatherData.query.filter_by(station_id=station.id).order_by(GeneralWeatherData.date.desc())
+        query = GeneralWeatherData.query.filter_by(station_id=station.id)
+        if start_date and end_date:
+            query = query.filter(GeneralWeatherData.date.between(start_date, end_date))
+        elif start_date:
+            query = query.filter(GeneralWeatherData.date >= start_date)
+        elif end_date:
+            query = query.filter(GeneralWeatherData.date <= end_date)
+        query = query.order_by(GeneralWeatherData.date.desc())
         total_records = query.count()
         logger.info(f"Found {total_records} records")
         
         data = query.offset(start).limit(length).all()
+        data_list = [record.to_dict() for record in data if record is not None]
         return jsonify({
             'draw': request.args.get('draw', type=int),
             'recordsTotal': total_records,
             'recordsFiltered': total_records,
-            'data': [record.to_dict() for record in data]
+            'data': data_list if data_list else []
         })
     except Exception as e:
         logger.error(f"Error fetching general weather: {str(e)}")
@@ -59,6 +69,8 @@ def get_detailed_weather_table():
         start = request.args.get('start', default=0, type=int)
         length = request.args.get('length', default=7, type=int)
         station_name = request.args.get('station_name', type=str)
+        start_date = request.args.get('start_date', type=str)
+        end_date = request.args.get('end_date', type=str)
         
         if not station_name:
             return jsonify({'error': 'Station name is required'}), 400
@@ -68,16 +80,24 @@ def get_detailed_weather_table():
             return jsonify({'error': 'Station not found'}), 404
         
         logger.info(f"Fetching detailed weather for station {station.name}")
-        query = DetailedWeatherData.query.filter_by(station_id=station.id).order_by(DetailedWeatherData.date.desc())
+        query = DetailedWeatherData.query.filter_by(station_id=station.id)
+        if start_date and end_date:
+            query = query.filter(DetailedWeatherData.date.between(start_date, end_date))
+        elif start_date:
+            query = query.filter(DetailedWeatherData.date >= start_date)
+        elif end_date:
+            query = query.filter(DetailedWeatherData.date <= end_date)
+        query = query.order_by(DetailedWeatherData.date.desc())
         total_records = query.count()
         logger.info(f"Found {total_records} records")
         
         data = query.offset(start).limit(length).all()
+        data_list = [record.to_dict() for record in data if record is not None]
         return jsonify({
             'draw': request.args.get('draw', type=int),
             'recordsTotal': total_records,
             'recordsFiltered': total_records,
-            'data': [record.to_dict() for record in data]
+            'data': data_list if data_list else []
         })
     except Exception as e:
         logger.error(f"Error fetching detailed weather: {str(e)}")
@@ -89,6 +109,8 @@ def get_heat_units_table():
         start = request.args.get('start', default=0, type=int)
         length = request.args.get('length', default=7, type=int)
         station_name = request.args.get('station_name', type=str)
+        start_date = request.args.get('start_date', type=str)
+        end_date = request.args.get('end_date', type=str)
         
         if not station_name:
             return jsonify({'error': 'Station name is required'}), 400
@@ -98,16 +120,24 @@ def get_heat_units_table():
             return jsonify({'error': 'Station not found'}), 404
         
         logger.info(f"Fetching heat units for station {station.name}")
-        query = HeatUnitsData.query.filter_by(station_id=station.id).order_by(HeatUnitsData.date.desc())
+        query = HeatUnitsData.query.filter_by(station_id=station.id)
+        if start_date and end_date:
+            query = query.filter(HeatUnitsData.date.between(start_date, end_date))
+        elif start_date:
+            query = query.filter(HeatUnitsData.date >= start_date)
+        elif end_date:
+            query = query.filter(HeatUnitsData.date <= end_date)
+        query = query.order_by(HeatUnitsData.date.desc())
         total_records = query.count()
         logger.info(f"Found {total_records} records")
         
         data = query.offset(start).limit(length).all()
+        data_list = [record.to_dict() for record in data if record is not None]
         return jsonify({
             'draw': request.args.get('draw', type=int),
             'recordsTotal': total_records,
             'recordsFiltered': total_records,
-            'data': [record.to_dict() for record in data]
+            'data': data_list if data_list else []
         })
     except Exception as e:
         logger.error(f"Error fetching heat units: {str(e)}")
@@ -257,43 +287,156 @@ def download_data():
         logger.error(f"Error downloading data: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+# @weather_bp.route('/weather/chart-data/', methods=['GET'])
+# def get_chart_data():
+#     try:
+#         station_name = request.args.get('station_name', type=str)
+#         start = request.args.get('start', default=0, type=int)
+#         length = request.args.get('length', default=30, type=int)
+#         start_date = request.args.get('start_date', type=str)
+#         end_date = request.args.get('end_date', type=str)
+#         if not station_name:
+#             return jsonify({'error': 'Station name is required'}), 400
+#         station = WeatherStation.query.filter_by(name=station_name).first()
+#         if not station:
+#             return jsonify({'error': 'Station not found'}), 404
+#         # Build date filter for any combination of start_date/end_date
+#         date_filter = []
+#         if start_date and end_date:
+#             date_filter = [GeneralWeatherData.date.between(start_date, end_date)]
+#         elif start_date:
+#             date_filter = [GeneralWeatherData.date >= start_date]
+#         elif end_date:
+#             date_filter = [GeneralWeatherData.date <= end_date]
+#         # Get general weather data
+#         general_query = GeneralWeatherData.query.filter_by(station_id=station.id)
+#         if date_filter:
+#             general_query = general_query.filter(*date_filter)
+#         general_query = general_query.order_by(GeneralWeatherData.date.desc())
+#         general_data = general_query.offset(start).limit(length).all()
+#         # Get detailed weather data
+#         detailed_query = DetailedWeatherData.query.filter_by(station_id=station.id)
+#         if date_filter:
+#             detailed_query = detailed_query.filter(*date_filter)
+#         detailed_query = detailed_query.order_by(DetailedWeatherData.date.desc())
+#         detailed_data = {d.date: d for d in detailed_query.offset(start).limit(length).all()}
+#         # Get heat units data
+#         heatunits_query = HeatUnitsData.query.filter_by(station_id=station.id)
+#         if date_filter:
+#             heatunits_query = heatunits_query.filter(*date_filter)
+#         heatunits_query = heatunits_query.order_by(HeatUnitsData.date.desc())
+#         heatunits_data = {h.date: h for h in heatunits_query.offset(start).limit(length).all()}
+#         # Merge data by date
+#         chart_data = []
+#         for g in general_data:
+#             date = g.date
+#             d = detailed_data.get(date)
+#             h = heatunits_data.get(date)
+#             row = g.to_dict()
+#             if d:
+#                 row.update(d.to_dict())
+#             if h:
+#                 row.update(h.to_dict())
+#             chart_data.append(row)
+#         return jsonify(chart_data)
+#     except Exception as e:
+#         logger.error(f"Error fetching chart data: {str(e)}")
+#         return jsonify({'error': str(e)}), 500
+
+@weather_bp.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({'status': 'ok', 'message': 'pong'}), 200
+
 @weather_bp.route('/weather/chart-data/', methods=['GET'])
 def get_chart_data():
     try:
         station_name = request.args.get('station_name', type=str)
         start = request.args.get('start', default=0, type=int)
         length = request.args.get('length', default=30, type=int)
+        start_date = request.args.get('start_date', type=str)
+        end_date = request.args.get('end_date', type=str)
         if not station_name:
             return jsonify({'error': 'Station name is required'}), 400
         station = WeatherStation.query.filter_by(name=station_name).first()
         if not station:
             return jsonify({'error': 'Station not found'}), 404
+        # Build date filter for any combination of start_date/end_date
+        date_filter = []
+        if start_date and end_date:
+            date_filter = [GeneralWeatherData.date.between(start_date, end_date)]
+        elif start_date:
+            date_filter = [GeneralWeatherData.date >= start_date]
+        elif end_date:
+            date_filter = [GeneralWeatherData.date <= end_date]
         # Get general weather data
-        general_query = GeneralWeatherData.query.filter_by(station_id=station.id).order_by(GeneralWeatherData.date.desc())
+        general_query = GeneralWeatherData.query.filter_by(station_id=station.id)
+        if date_filter:
+            general_query = general_query.filter(*date_filter)
+        general_query = general_query.order_by(GeneralWeatherData.date.desc())
         general_data = general_query.offset(start).limit(length).all()
         # Get detailed weather data
-        detailed_query = DetailedWeatherData.query.filter_by(station_id=station.id).order_by(DetailedWeatherData.date.desc())
+        detailed_query = DetailedWeatherData.query.filter_by(station_id=station.id)
+        if date_filter:
+            detailed_query = detailed_query.filter(*date_filter)
+        detailed_query = detailed_query.order_by(DetailedWeatherData.date.desc())
         detailed_data = {d.date: d for d in detailed_query.offset(start).limit(length).all()}
         # Get heat units data
-        heatunits_query = HeatUnitsData.query.filter_by(station_id=station.id).order_by(HeatUnitsData.date.desc())
+        heatunits_query = HeatUnitsData.query.filter_by(station_id=station.id)
+        if date_filter:
+            heatunits_query = heatunits_query.filter(*date_filter)
+        heatunits_query = heatunits_query.order_by(HeatUnitsData.date.desc())
         heatunits_data = {h.date: h for h in heatunits_query.offset(start).limit(length).all()}
         # Merge data by date
         chart_data = []
-        for g in general_data:
-            date = g.date
-            d = detailed_data.get(date)
-            h = heatunits_data.get(date)
-            row = g.to_dict()
+        # Get all dates in the range (from min to max date in any table)
+        all_dates_set = set([g.date for g in GeneralWeatherData.query.filter_by(station_id=station.id)])
+        all_dates_set.update([d.date for d in DetailedWeatherData.query.filter_by(station_id=station.id)])
+        all_dates_set.update([h.date for h in HeatUnitsData.query.filter_by(station_id=station.id)])
+        if start_date:
+            start_dt = datetime.strptime(start_date, '%Y-%m-%d').date()
+        else:
+            start_dt = min(all_dates_set) if all_dates_set else None
+        if end_date:
+            end_dt = datetime.strptime(end_date, '%Y-%m-%d').date()
+        else:
+            end_dt = max(all_dates_set) if all_dates_set else None
+        if not start_dt or not end_dt:
+            return jsonify([])
+        # Generate all dates in the range (most recent first)
+        all_dates = [start_dt + timedelta(days=i) for i in range((end_dt - start_dt).days + 1)]
+        all_dates = list(reversed(all_dates))  # Most recent first
+        # Build dicts for fast lookup
+        general_dict = {g.date: g for g in GeneralWeatherData.query.filter_by(station_id=station.id)}
+        detailed_dict = {d.date: d for d in DetailedWeatherData.query.filter_by(station_id=station.id)}
+        heatunits_dict = {h.date: h for h in HeatUnitsData.query.filter_by(station_id=station.id)}
+        # Merge data by date, always include all fields (set missing to None)
+        for date in all_dates[start:start+length]:
+            row = {'date': date.strftime('%b %d, %Y - %a')}
+            g = general_dict.get(date)
+            d = detailed_dict.get(date)
+            h = heatunits_dict.get(date)
+            if g:
+                row.update(g.to_dict())
             if d:
                 row.update(d.to_dict())
+            else:
+                row.setdefault('average_temp', None)
+                row.setdefault('dew_point', None)
+                row.setdefault('max_dewpoint', None)
+                row.setdefault('min_dewpoint', None)
+                row.setdefault('wind_run', None)
+                row.setdefault('soil_temp', None)
             if h:
                 row.update(h.to_dict())
+            else:
+                row.setdefault('corn_heat_units', None)
+                row.setdefault('cotton_heat_units', None)
+                row.setdefault('sorghum_heat_units', None)
+                row.setdefault('heat_units_50_degree', None)
+                row.setdefault('heat_units_55_degree', None)
+                row.setdefault('heat_units_60_degree', None)
             chart_data.append(row)
         return jsonify(chart_data)
     except Exception as e:
         logger.error(f"Error fetching chart data: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
-@weather_bp.route('/ping', methods=['GET'])
-def ping():
-    return jsonify({'status': 'ok', 'message': 'pong'}), 200

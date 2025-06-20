@@ -96,9 +96,18 @@ const api = {
     },
 
     // Get merged chart data for a station
-    getChartData: async (stationName: string, start: number = 0, length: number = 30): Promise<any[]> => {
+    getChartData: async (
+        stationName: string,
+        start: number = 0,
+        length: number = 30,
+        startDate?: string,
+        endDate?: string
+    ): Promise<any[]> => {
+        const params: any = { station_name: stationName, start, length };
+        if (startDate) params.start_date = startDate;
+        if (endDate) params.end_date = endDate;
         const response = await axios.get(`${API_BASE_URL}/weather/chart-data/`, {
-            params: { station_name: stationName, start, length }
+            params
         });
         return response.data;
     },
