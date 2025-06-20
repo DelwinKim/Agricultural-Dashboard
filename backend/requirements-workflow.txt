@@ -25,3 +25,4 @@ Flask
 SQLAlchemy
 python-dotenv
 Flask-SQLAlchemy
+Flask-CORS
