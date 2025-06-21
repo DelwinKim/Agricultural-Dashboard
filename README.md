@@ -1,10 +1,10 @@
-# 🌐 [Agricultural Dashboard - Live Website](https://delwinkim.github.io/Agricultural-Dashboard/)
+# 🌐 [Live Website Link](https://delwinkim.github.io/Agricultural-Dashboard/)
 
 ---
 
 # Agricultural Dashboard
 
-A comprehensive weather data dashboard for agricultural monitoring, built with Django and Flask backends, and a React frontend.
+A comprehensive weather data dashboard for agricultural monitoring, built with Flask backend, and a React-Bootstrap frontend.
 
 ## Project Overview
 
@@ -24,31 +24,28 @@ Agricultural-Dashboard/
 │   ├── cli.py                 # CLI commands
 │   └── requirements.txt       # Python dependencies
 ├── frontend/                  # React frontend
-│   ├── src/
-│   │   ├── components/        # React components
-│   │   ├── services/          # API services
-│   │   └── styles/            # CSS styles
-│   ├── package.json           # Node.js dependencies
-│   └── public/                # Static files
-├── BootstrapAgrilife/         # Django project settings
-├── weatherdashboard/          # Django app
-│   ├── management/           # Django management commands
-│   ├── models.py             # Django models
-│   ├── views.py              # Django views
-│   └── utils/                # Utility functions
-├── manage.py                 # Django management script
-└── requirements.txt          # Django dependencies
+|   ├── src/
+|   │   ├── components/        # React components
+|   │   ├── services/          # API services
+|   │   └── styles/            # CSS styles
+|   ├── package.json           # Node.js dependencies
+|   └── public/                # Static files
+
 ```
 
 ## Features
 
 ### Data Collection
-- **Web Scraping**: Automated scraping of weather data from Texas A&M AgriLife weather stations
-- **Data Processing**: Parsing and cleaning of raw weather data
+- **Web Scraping**: Automated scraping of weather data from Texas A&M AgriLife weather stations  
+- **Source URL**: Data is scraped from the [Texas ET Network](https://texaset.tamu.edu/)
+- **Update Schedule**: Scrapes the previous day’s weather summary **daily at 10:15 AM CDT**  
 - **Multiple Data Types**: General weather, detailed weather, heat units, and chill units
 
+### Data Continuity Notice
+> Because this dashboard scrapes the data directly from the Texas ET Network data, any gaps or breaks within the historical data is an artifact from the original site
+
 ### Data Storage
-- **Database**: SQLite database for data persistence
+- **Database**: PostgreSQL database for data persistence
 - **Models**: Structured data models for different weather parameters
 - **Data Integrity**: Duplicate prevention and data validation
 
@@ -93,7 +90,6 @@ The dashboard monitors weather data from the following stations in the Coastal B
 - Solar radiation
 - Rainfall
 - Wind speed (4 AM and 4 PM)
-- Battery levels
 
 ### Detailed Weather Data
 - Average temperature
@@ -114,12 +110,10 @@ The dashboard monitors weather data from the following stations in the Coastal B
 ## Technology Stack
 
 ### Backend
-- **Django**: Main web framework
-- **Flask**: Alternative API backend
+- **Flask**: Main Web Framework
 - **SQLAlchemy**: Database ORM (Flask)
-- **SQLite**: Database
+- **PostgreSQL**: Database
 - **BeautifulSoup**: Web scraping
-- **Requests**: HTTP requests
 
 ### Frontend
 - **React**: Frontend framework
