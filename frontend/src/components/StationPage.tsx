@@ -17,7 +17,7 @@ import api from '../services/api';
 import { WeatherStation } from '../types';
 import { useSidebar } from '../contexts/SidebarContext';
 import { useParams } from 'react-router-dom';
-import { Clipboard2Data, Snow, Fire, FileText } from 'react-bootstrap-icons';
+import { Clipboard2Data, Snow, Fire, FileText, ThermometerHalf, Droplet, Wind, Sun } from 'react-bootstrap-icons';
 
 // Register ChartJS components
 ChartJS.register(
@@ -617,27 +617,58 @@ const StationPage: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="charts-section p-3">
+                    <div className="charts-section">
                         {/* Render all selected charts */}
                         {chartData && Array.isArray(activeCharts) && activeCharts.length > 0 ? (
                             activeCharts.map((chartType) => {
                                 const chart = prepareChartData(chartData, chartType);
                                 let title = '';
+                                let icon = null;
                                 switch (chartType) {
-                                    case 'temperature': title = 'Max / Min / Avg Temperature'; break;
-                                    case 'rainfall': title = 'Rainfall & Max Temp (Dual Axis)'; break;
-                                    case 'eto': title = 'Daily ETo (Evapotranspiration)'; break;
-                                    case 'solar': title = 'Solar Radiation'; break;
-                                    case 'humidity': title = 'Min RH & Dew Point'; break;
-                                    case 'humidity-dewpoint': title = 'Min RH & Dew Point Over Time'; break;
-                                    case 'dewpoint-scatter': title = 'Ambient Temp vs Dew Point (Scatter)'; break;
-                                    case 'wind': title = 'Wind Patterns'; break;
-                                    case 'cumulative-heat-units': title = 'Cumulative Heat Units (Corn, Cotton, Sorghum)'; break;
-                                    default: title = 'Weather Data Chart';
+                                    case 'temperature': 
+                                        title = 'Max / Min / Avg Temperature'; 
+                                        icon = <ThermometerHalf className="icon-temp me-2" style={{ color: '#e74c3c' }} />;
+                                        break;
+                                    case 'rainfall': 
+                                        title = 'Rainfall & Max Temp (Dual Axis)'; 
+                                        icon = <Droplet className="icon-rain me-2" style={{ color: '#3498db' }} />;
+                                        break;
+                                    case 'eto': 
+                                        title = 'Daily ETo (Evapotranspiration)'; 
+                                        icon = <Droplet className="icon-rain me-2" style={{ color: '#1abc9c' }} />;
+                                        break;
+                                    case 'solar': 
+                                        title = 'Solar Radiation'; 
+                                        icon = <Sun className="me-2" style={{ color: '#f39c12' }} />;
+                                        break;
+                                    case 'humidity': 
+                                        title = 'Min RH & Dew Point'; 
+                                        icon = <Droplet className="icon-humidity me-2" style={{ color: '#8e44ad' }} />;
+                                        break;
+                                    case 'humidity-dewpoint': 
+                                        title = 'Min RH & Dew Point Over Time'; 
+                                        icon = <Droplet className="icon-humidity me-2" style={{ color: '#8e44ad' }} />;
+                                        break;
+                                    case 'dewpoint-scatter': 
+                                        title = 'Ambient Temp vs Dew Point (Scatter)'; 
+                                        icon = <Droplet className="icon-dew me-2" style={{ color: '#8e44ad' }} />;
+                                        break;
+                                    case 'wind': 
+                                        title = 'Wind Patterns'; 
+                                        icon = <Wind className="icon-wind me-2" style={{ color: '#16a085' }} />;
+                                        break;
+                                    case 'cumulative-heat-units': 
+                                        title = 'Cumulative Heat Units (Corn, Cotton, Sorghum)'; 
+                                        icon = <Sun className="icon-heat me-2" style={{ color: '#f39c12' }} />;
+                                        break;
+                                    default: 
+                                        title = 'Weather Data Chart';
+                                        icon = <FileText className="me-2" style={{ color: '#7b8a8b' }} />;
                                 }
                                 return (
                                     <div className="mb-2 card" key={chartType}>
-                                        <div className="card-header">
+                                        <div className="card-header py-3 d-flex align-items-center">
+                                            {icon}
                                             <h6 className="m-0 font-weight-bold" style={{ fontSize: '1rem' }}>{title}</h6>
                                         </div>
                                         <div className="card-body" style={{ height: '500px', padding: 0 }}>
@@ -823,27 +854,58 @@ const StationPage: React.FC = () => {
             </div>
                 </div>
             ) : showCharts ? (
-                <div className="charts-section p-3">
+                <div className="charts-section">
                     {/* Render all selected charts */}
                     {chartData && Array.isArray(activeCharts) && activeCharts.length > 0 ? (
                         activeCharts.map((chartType) => {
                             const chart = prepareChartData(chartData, chartType);
                             let title = '';
+                            let icon = null;
                             switch (chartType) {
-                                case 'temperature': title = 'Max / Min / Avg Temperature'; break;
-                                case 'rainfall': title = 'Rainfall & Max Temp (Dual Axis)'; break;
-                                case 'eto': title = 'Daily ETo (Evapotranspiration)'; break;
-                                case 'solar': title = 'Solar Radiation'; break;
-                                case 'humidity': title = 'Min RH & Dew Point'; break;
-                                case 'humidity-dewpoint': title = 'Min RH & Dew Point Over Time'; break;
-                                case 'dewpoint-scatter': title = 'Ambient Temp vs Dew Point (Scatter)'; break;
-                                case 'wind': title = 'Wind Patterns'; break;
-                                case 'cumulative-heat-units': title = 'Cumulative Heat Units (Corn, Cotton, Sorghum)'; break;
-                                default: title = 'Weather Data Chart';
+                                case 'temperature': 
+                                    title = 'Max / Min / Avg Temperature'; 
+                                    icon = <ThermometerHalf className="icon-temp me-2" style={{ color: '#e74c3c' }} />;
+                                    break;
+                                case 'rainfall': 
+                                    title = 'Rainfall & Max Temp (Dual Axis)'; 
+                                    icon = <Droplet className="icon-rain me-2" style={{ color: '#3498db' }} />;
+                                    break;
+                                case 'eto': 
+                                    title = 'Daily ETo (Evapotranspiration)'; 
+                                    icon = <Droplet className="icon-rain me-2" style={{ color: '#1abc9c' }} />;
+                                    break;
+                                case 'solar': 
+                                    title = 'Solar Radiation'; 
+                                    icon = <Sun className="me-2" style={{ color: '#f39c12' }} />;
+                                    break;
+                                case 'humidity': 
+                                    title = 'Min RH & Dew Point'; 
+                                    icon = <Droplet className="icon-humidity me-2" style={{ color: '#8e44ad' }} />;
+                                    break;
+                                case 'humidity-dewpoint': 
+                                    title = 'Min RH & Dew Point Over Time'; 
+                                    icon = <Droplet className="icon-humidity me-2" style={{ color: '#8e44ad' }} />;
+                                    break;
+                                case 'dewpoint-scatter': 
+                                    title = 'Ambient Temp vs Dew Point (Scatter)'; 
+                                    icon = <Droplet className="icon-dew me-2" style={{ color: '#8e44ad' }} />;
+                                    break;
+                                case 'wind': 
+                                    title = 'Wind Patterns'; 
+                                    icon = <Wind className="icon-wind me-2" style={{ color: '#16a085' }} />;
+                                    break;
+                                case 'cumulative-heat-units': 
+                                    title = 'Cumulative Heat Units (Corn, Cotton, Sorghum)'; 
+                                    icon = <Sun className="icon-heat me-2" style={{ color: '#f39c12' }} />;
+                                    break;
+                                default: 
+                                    title = 'Weather Data Chart';
+                                    icon = <FileText className="me-2" style={{ color: '#7b8a8b' }} />;
                             }
                             return (
                                 <div className="mb-2 card" key={chartType}>
-                                    <div className="card-header">
+                                    <div className="card-header py-3 d-flex align-items-center">
+                                        {icon}
                                         <h6 className="m-0 font-weight-bold" style={{ fontSize: '1rem' }}>{title}</h6>
                                     </div>
                                     <div className="card-body" style={{ height: '500px', padding: 0 }}>

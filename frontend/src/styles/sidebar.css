@@ -217,16 +217,16 @@
     outline: none !important;
     box-shadow: none !important;
 }
-
+/* 
 .btn-group .btn:first-child {
     border-top-left-radius: 4px !important;
     border-bottom-left-radius: 4px !important;
-}
-
+} */
+/* 
 .btn-group .btn:last-child {
     border-top-right-radius: 4px !important;
     border-bottom-right-radius: 4px !important;
-}
+} */
 
 .btn-group .btn:focus {
     outline: none !important;
@@ -235,10 +235,9 @@
 
 /* Table Toggle Button Styles */
 .btn-group .generalWeather-btn {
-    color: #adb5bd !important;
+    color: #333 !important;
     border-color: #C1E1C5 !important;
-    border-width: 3px !important;
-    background-color: transparent !important;
+    background-color: #fff !important;
 }
 
 .btn-group .generalWeather-btn.btn-filled,
@@ -246,7 +245,6 @@
     background-color: #C1E1C5 !important;
     color: black !important;
     border-color: #C1E1C5 !important;
-    border-width: 3px !important;
 }
 
 .btn-group .generalWeather-btn:active {
@@ -255,10 +253,9 @@
 }
 
 .btn-group .detailedWeather-btn {
-    color: #adb5bd !important;
+    color: #333 !important;
     border-color: #D4D4D4 !important;
-    border-width: 3px !important;
-    background-color: transparent !important;
+    background-color: #fff !important;
 }
 
 .btn-group .detailedWeather-btn.btn-filled,
@@ -266,7 +263,6 @@
     background-color: #D4D4D4 !important;
     color: black !important;
     border-color: #D4D4D4 !important;
-    border-width: 3px !important;
 }
 
 .btn-group .detailedWeather-btn:active {
@@ -275,10 +271,9 @@
 }
 
 .btn-group .heatUnits-btn {
-    color: #adb5bd !important;
+    color: #333 !important;
     border-color: #F4E1D2 !important;
-    border-width: 3px !important;
-    background-color: transparent !important;
+    background-color: #fff !important;
 }
 
 .btn-group .heatUnits-btn.btn-filled,
@@ -286,7 +281,6 @@
     background-color: #F4E1D2 !important;
     color: black !important;
     border-color: #F4E1D2 !important;
-    border-width: 3px !important;
 }
 
 .btn-group .heatUnits-btn:active {
@@ -295,10 +289,9 @@
 }
 
 .btn-group .chillUnits-btn {
-    color: #adb5bd !important;
+    color: #333 !important;
     border-color: #BBDEFB !important;
-    border-width: 3px !important;
-    background-color: transparent !important;
+    background-color: #fff !important;
 }
 
 .btn-group .chillUnits-btn.btn-filled,
@@ -306,7 +299,6 @@
     background-color: #BBDEFB !important;
     color: black !important;
     border-color: #BBDEFB !important;
-    border-width: 3px !important;
 }
 
 .btn-group .chillUnits-btn:active {
@@ -422,4 +414,106 @@
 
 .sb-sidenav .sb-sidenav-menu .nav .nav-link.sb-dropdown-toggle.active-dropdown .sb-sidenav-collapse-arrow {
     color: #198754;
+}
+
+/* Chart Toggle Button Styles */
+.chart-toggle-btn {
+    background: #fff;
+    color: #333;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.82rem;
+    padding: 0.28rem 0.8rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.05rem;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    width: 100%;
+    max-width: 180px;
+    height: 32px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+.chart-toggle-btn:hover {
+    background: #f5f5f5;
+    border-color: #1976d2;
+    color: #1976d2;
+}
+.chart-toggle-btn.active {
+    background: #e3f2fd;
+    border-color: #1976d2;
+    color: #1976d2;
+}
+
+/* Icon color helpers for chart buttons */
+.chart-toggle-btn .icon-temp { color: #fb8c00; }
+.chart-toggle-btn .icon-rain { color: #1976d2; }
+.chart-toggle-btn .icon-wind { color: #43a047; }
+.chart-toggle-btn .icon-humidity { color: #8e24aa; }
+.chart-toggle-btn .icon-dew { color: #00bcd4; }
+.chart-toggle-btn .icon-soil { color: #8d6e63; }
+.chart-toggle-btn .icon-heat { color: #fb8c00; }
+.chart-toggle-btn .icon-chill { color: #8e24aa; }
+
+/* Table Toggle Button Styles (match chart toggle style, color per table) */
+.table-toggle-btn {
+    background: #fff;
+    color: #333;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.82rem;
+    padding: 0.28rem 0.8rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.05rem;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    width: 100%;
+    max-width: 180px;
+    height: 32px;
+    box-sizing: border-box;
+    justify-content: center;
+    border-width: 2px;
+}
+.table-toggle-btn.generalWeather-btn:hover {
+    background: var(--general-weather-bg);
+    border-color: var(--general-weather-header);
+    color: #333;
+}
+.table-toggle-btn.detailedWeather-btn:hover {
+    background: var(--detailed-weather-bg);
+    border-color: var(--detailed-weather-header);
+    color: #333;
+}
+.table-toggle-btn.heatUnits-btn:hover {
+    background: var(--heat-units-bg);
+    border-color: var(--heat-units-header);
+    color: #333;
+}
+.table-toggle-btn.chillUnits-btn:hover {
+    background: var(--chill-units-bg);
+    border-color: var(--chill-units-header);
+    color: #333;
+}
+.table-toggle-btn.active {
+    color: #333;
+}
+.table-toggle-btn.generalWeather-btn.active {
+    background: var(--general-weather-bg);
+    border-color: var(--general-weather-header);
+}
+.table-toggle-btn.detailedWeather-btn.active {
+    background: var(--detailed-weather-bg);
+    border-color: var(--detailed-weather-header);
+}
+.table-toggle-btn.heatUnits-btn.active {
+    background: var(--heat-units-bg);
+    border-color: var(--heat-units-header);
+}
+.table-toggle-btn.chillUnits-btn.active {
+    background: var(--chill-units-bg);
+    border-color: var(--chill-units-header);
 }

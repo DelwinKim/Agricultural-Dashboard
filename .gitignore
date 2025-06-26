@@ -1,7 +1,8 @@
 # Ignore the virtual environment folder
 backend/venv/
 
-
+important_commands.txt
+demo.py
 
 # Ignore PyCharm and VSCode project files
 .idea/
@@ -12,3 +13,5 @@ __pycache__/
 *.py[cod]
 
 backend/.env
+
+test_dump.sql

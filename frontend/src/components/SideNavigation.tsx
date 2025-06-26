@@ -92,7 +92,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                             <div className="btn-group d-flex flex-column">
                                 <button 
                                     type="button"
-                                    className="btn btn-sm generalWeather-btn mb-2"
+                                    className={`table-toggle-btn generalWeather-btn${activeTables.generalWeather ? ' active' : ''}`}
                                     data-table="generalWeatherTable"
                                     onClick={() => window.toggleTable('generalWeatherTable')}
                                 >
@@ -101,7 +101,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                                 </button>
                                 <button 
                                     type="button"
-                                    className="btn btn-sm detailedWeather-btn mb-2"
+                                    className={`table-toggle-btn detailedWeather-btn${activeTables.detailedWeather ? ' active' : ''}`}
                                     data-table="detailedWeatherTable"
                                     onClick={() => window.toggleTable('detailedWeatherTable')}
                                 >
@@ -110,16 +110,16 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                                 </button>
                                 <button 
                                     type="button"
-                                    className="btn btn-sm heatUnits-btn mb-2"
+                                    className={`table-toggle-btn heatUnits-btn${activeTables.heatUnits ? ' active' : ''}`}
                                     data-table="heatUnitsTable"
                                     onClick={() => window.toggleTable('heatUnitsTable')}
                                 >
-                                    <Fire className="me-2" />    
+                                    <Fire className="me-2" />
                                     Heat Units
                                 </button>
                                 <button 
                                     type="button"
-                                    className="btn btn-sm chillUnits-btn mb-2"
+                                    className={`table-toggle-btn chillUnits-btn${activeTables.chillUnits ? ' active' : ''}`}
                                     data-table="seasonalChillUnitsTable"
                                     onClick={() => window.toggleTable('seasonalChillUnitsTable')}
                                 >
@@ -157,38 +157,38 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ onToggleTable, activeTa
                         <nav className="sb-sidenav-menu-nested nav flex-column">
                             <div className="btn-group d-flex flex-column">
                                 <button 
-                                    className={`btn btn-sm ${activeCharts.includes('temperature') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    className={`chart-toggle-btn${activeCharts.includes('temperature') ? ' active' : ''}`}
                                     onClick={() => handleChartToggle('temperature')}
                                 >
-                                    <ThermometerHalf className="me-2" />
+                                    <ThermometerHalf className="icon-temp me-2" />
                                     Temperature
                                 </button>
                                 <button 
-                                    className={`btn btn-sm ${activeCharts.includes('rainfall') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    className={`chart-toggle-btn${activeCharts.includes('rainfall') ? ' active' : ''}`}
                                     onClick={() => handleChartToggle('rainfall')}
                                 >
-                                    <Droplet className="me-2" />
+                                    <Droplet className="icon-rain me-2" />
                                     Rainfall
                                 </button>
                                 <button 
-                                    className={`btn btn-sm ${activeCharts.includes('wind') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    className={`chart-toggle-btn${activeCharts.includes('wind') ? ' active' : ''}`}
                                     onClick={() => handleChartToggle('wind')}
                                 >
-                                    <Wind className="me-2" />
+                                    <Wind className="icon-wind me-2" />
                                     Wind
                                 </button>
                                 <button 
-                                    className={`btn btn-sm ${activeCharts.includes('humidity-dewpoint') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    className={`chart-toggle-btn${activeCharts.includes('humidity-dewpoint') ? ' active' : ''}`}
                                     onClick={() => handleChartToggle('humidity-dewpoint')}
                                 >
-                                    <Droplet className="me-2" />
+                                    <Droplet className="icon-humidity me-2" />
                                     Min RH & Dew Point
                                 </button>
                                 <button 
-                                    className={`btn btn-sm ${activeCharts.includes('cumulative-heat-units') ? 'btn-primary' : 'btn-secondary'} mb-2`}
+                                    className={`chart-toggle-btn${activeCharts.includes('cumulative-heat-units') ? ' active' : ''}`}
                                     onClick={() => handleChartToggle('cumulative-heat-units')}
                                 >
-                                    <Sun className="me-2" />
+                                    <Sun className="icon-heat" />
                                     Cumulative Heat Units
                                 </button>
                             </div>
